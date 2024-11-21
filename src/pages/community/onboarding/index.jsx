@@ -280,7 +280,7 @@ const CommunityOnboarding = () => {
     setTouched,
     setErrors,
   } = formik;
-
+  console.log("hi");
   return (
     <Grid container sx={{ mt: 2 }} spacing={4}>
       <Grid
