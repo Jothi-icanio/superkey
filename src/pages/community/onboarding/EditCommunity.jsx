@@ -1,12 +1,4 @@
-import {
-  Button,
-  FormLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 
 import AppCard from "components/AppComponents/AppCard";
@@ -50,137 +42,137 @@ const EditCommunity = ({ open, onClose }) => {
     setErrors,
   } = formik;
 
-  const sections = [
-    {
-      title: "Address Details",
-      fields: [
-        {
-          label: "Community Name",
-          type: "text",
-          value: values.addressDetails.communityName,
-          name: "addressDetails.communityName",
-        },
-        {
-          label: "City",
-          type: "text",
-          value: values.addressDetails.city,
-          name: "addressDetails.city",
-        },
-        {
-          label: "State",
-          type: "text",
-          value: values.addressDetails.state,
-          name: "addressDetails.state",
-        },
-        {
-          label: "ZipCode",
-          type: "text",
-          value: values.addressDetails.zipcode,
-          name: "addressDetails.zipcode",
-        },
-      ],
-    },
-    {
-      title: "Community Details",
-      fields: [
-        {
-          label: "Community Property Manager",
-          type: "select",
-          value: values.communityDetails.communityManager,
-          name: "communityDetails.communityManager",
-          options: [
-            { label: "Ten", value: 10 },
-            { label: "Twenty", value: 20 },
-            { label: "Thirty", value: 30 },
-          ],
-        },
-        {
-          label: "Contact Number",
-          type: "text",
-          value: values.communityDetails.contactNumber,
-          name: "communityDetails.contactNumber",
-        },
-        {
-          label: "Community Type",
-          type: "select",
-          value: values.communityDetails.communityType,
-          name: "communityDetails.communityType",
-          options: [
-            { label: "Ten", value: 10 },
-            { label: "Twenty", value: 20 },
-            { label: "Thirty", value: 30 },
-          ],
-        },
-        {
-          label: "Email ID",
-          type: "text",
-          value: values.communityDetails.email,
-          name: "communityDetails.email",
-        },
-      ],
-    },
-    {
-      title: "Community Details",
-      fields: [
-        {
-          label: "Community Property Manager",
-          type: "select",
-          value: values.communityDetails.communityManager,
-          name: "communityDetails.communityManager",
-          options: [
-            { label: "Ten", value: 10 },
-            { label: "Twenty", value: 20 },
-            { label: "Thirty", value: 30 },
-          ],
-        },
-        {
-          label: "Contact Number",
-          type: "text",
-          value: values.communityDetails.contactNumber,
-          name: "communityDetails.contactNumber",
-        },
-        {
-          label: "Community Type",
-          type: "select",
-          value: values.communityDetails.communityType,
-          name: "communityDetails.communityType",
-          options: [
-            { label: "Ten", value: 10 },
-            { label: "Twenty", value: 20 },
-            { label: "Thirty", value: 30 },
-          ],
-        },
-        {
-          label: "Email ID",
-          type: "text",
-          value: values.communityDetails.email,
-          name: "communityDetails.email",
-        },
-      ],
-    },
-    {
-      title: "Insurance Details",
-      fields: [
-        {
-          label: "Insurance Value",
-          type: "select",
-          value: values.insuranceDetails.insuranceValue,
-          name: "insuranceDetails.insuranceValue",
-          options: [
-            { label: "Ten", value: 10 },
-            { label: "Twenty", value: 20 },
-            { label: "Thirty", value: 30 },
-          ],
-        },
-        {
-          label: "Insurance Coverage",
-          type: "text",
-          value: values.insuranceDetails.insuranceCoverage,
-          name: "insuranceDetails.insuranceCoverage",
-        },
-      ],
-    },
-  ];
+  // const sections = [
+  //   {
+  //     title: "Address Details",
+  //     fields: [
+  //       {
+  //         label: "Community Name",
+  //         type: "text",
+  //         value: values.addressDetails.communityName,
+  //         name: "addressDetails.communityName",
+  //       },
+  //       {
+  //         label: "City",
+  //         type: "text",
+  //         value: values.addressDetails.city,
+  //         name: "addressDetails.city",
+  //       },
+  //       {
+  //         label: "State",
+  //         type: "text",
+  //         value: values.addressDetails.state,
+  //         name: "addressDetails.state",
+  //       },
+  //       {
+  //         label: "ZipCode",
+  //         type: "text",
+  //         value: values.addressDetails.zipcode,
+  //         name: "addressDetails.zipcode",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Community Details",
+  //     fields: [
+  //       {
+  //         label: "Community Property Manager",
+  //         type: "select",
+  //         value: values.communityDetails.communityManager,
+  //         name: "communityDetails.communityManager",
+  //         options: [
+  //           { label: "Ten", value: 10 },
+  //           { label: "Twenty", value: 20 },
+  //           { label: "Thirty", value: 30 },
+  //         ],
+  //       },
+  //       {
+  //         label: "Contact Number",
+  //         type: "text",
+  //         value: values.communityDetails.contactNumber,
+  //         name: "communityDetails.contactNumber",
+  //       },
+  //       {
+  //         label: "Community Type",
+  //         type: "select",
+  //         value: values.communityDetails.communityType,
+  //         name: "communityDetails.communityType",
+  //         options: [
+  //           { label: "Ten", value: 10 },
+  //           { label: "Twenty", value: 20 },
+  //           { label: "Thirty", value: 30 },
+  //         ],
+  //       },
+  //       {
+  //         label: "Email ID",
+  //         type: "text",
+  //         value: values.communityDetails.email,
+  //         name: "communityDetails.email",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Community Details",
+  //     fields: [
+  //       {
+  //         label: "Community Property Manager",
+  //         type: "select",
+  //         value: values.communityDetails.communityManager,
+  //         name: "communityDetails.communityManager",
+  //         options: [
+  //           { label: "Ten", value: 10 },
+  //           { label: "Twenty", value: 20 },
+  //           { label: "Thirty", value: 30 },
+  //         ],
+  //       },
+  //       {
+  //         label: "Contact Number",
+  //         type: "text",
+  //         value: values.communityDetails.contactNumber,
+  //         name: "communityDetails.contactNumber",
+  //       },
+  //       {
+  //         label: "Community Type",
+  //         type: "select",
+  //         value: values.communityDetails.communityType,
+  //         name: "communityDetails.communityType",
+  //         options: [
+  //           { label: "Ten", value: 10 },
+  //           { label: "Twenty", value: 20 },
+  //           { label: "Thirty", value: 30 },
+  //         ],
+  //       },
+  //       {
+  //         label: "Email ID",
+  //         type: "text",
+  //         value: values.communityDetails.email,
+  //         name: "communityDetails.email",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Insurance Details",
+  //     fields: [
+  //       {
+  //         label: "Insurance Value",
+  //         type: "select",
+  //         value: values.insuranceDetails.insuranceValue,
+  //         name: "insuranceDetails.insuranceValue",
+  //         options: [
+  //           { label: "Ten", value: 10 },
+  //           { label: "Twenty", value: 20 },
+  //           { label: "Thirty", value: 30 },
+  //         ],
+  //       },
+  //       {
+  //         label: "Insurance Coverage",
+  //         type: "text",
+  //         value: values.insuranceDetails.insuranceCoverage,
+  //         name: "insuranceDetails.insuranceCoverage",
+  //       },
+  //     ],
+  //   },
+  // ];
 
   const Footer = () => {
     return (
@@ -193,7 +185,7 @@ const EditCommunity = ({ open, onClose }) => {
   const CommunityForm = ({ sections }) => {
     return (
       <>
-        {sections.map((section, index) => (
+        {/* {sections.map((section, index) => (
           <Grid
             container
             size={{ xs: 12 }}
@@ -240,7 +232,24 @@ const EditCommunity = ({ open, onClose }) => {
               ))}
             </Grid>
           </Grid>
-        ))}
+        ))} */}
+        <Grid
+          container
+          size={{ xs: 12 }}
+          padding={1}
+          spacing={2}
+          direction={"column"}
+        >
+          <Typography variant="h3" sx={{ mb: 2 }}>
+            {"Name"}
+          </Typography>
+          <TextField
+            value={values.addressDetails.communityName}
+            fullWidth
+            onChange={handleChange}
+            name={"addressDetails.communityName"}
+          />
+        </Grid>
       </>
     );
   };
@@ -249,7 +258,7 @@ const EditCommunity = ({ open, onClose }) => {
     <AppCard
       onClose={onClose}
       title={"Desert Springs"}
-      children={<CommunityForm sections={sections} />}
+      children={<CommunityForm />}
       footer={<Footer />}
     />
   );
