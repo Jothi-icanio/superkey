@@ -1,6 +1,7 @@
 import { Grid2 as Grid, Stack } from '@mui/material';
 import mapImg from 'assets/images/icons/map.png';
 import AppDropDown from 'components/AppComponents/AppDropDown';
+import AppLabelComponent from 'components/AppComponents/AppLabelComponent';
 import { Image, StyledTypography } from 'components/StyledComponents';
 import { useState } from 'react';
 
@@ -10,11 +11,11 @@ const options = [
     { label: "India, Phoenix", value: "LA" },
 ];
 
-const CommunityAddress = ({ setFieldValue, values, touched, errors }) => {
+const CommunityAddress = ({ setFieldValue, formValues, touched, errors }) => {
 
     const [address, setAddress] = useState({
         searchTerm: null,
-        value: values?.communityAddress || null,
+        value: formValues?.communityAddress || null,
     })
     const handleAddressChange = (key = 'searchTerm', value = null, reset = false) => {
         if (!reset) {
@@ -33,17 +34,16 @@ const CommunityAddress = ({ setFieldValue, values, touched, errors }) => {
             setFieldValue('communityAddress', null)
         }
     }
-    console.log(values)
     return (
         <Grid container textAlign={'center'} justifyContent={'center'} rowSpacing={4} >
-            <Grid item size={{ xs: 9 }}>
-                <Image src={mapImg} alt='map' />
+            <Grid item size={{ xs: 10 }}>
+                <Image height={'20vh'} src={mapImg} alt='map' />
             </Grid>
             <Grid item >
-                <Stack spacing={4}>
-                    <StyledTypography variant="h4">What is the address of your Community ?</StyledTypography>
+                <AppLabelComponent gap={2} variant="h4" label={'What is the address of your community?'}>
                     <AppDropDown error={touched.communityAddress && errors.communityAddress} onChange={handleAddressChange} searchString={address.searchTerm} value={address.value} options={options} />
-                </Stack>
+                </AppLabelComponent>
+
 
             </Grid>
         </Grid>

@@ -1,23 +1,10 @@
-// TextField.js
-import { TextField } from '@mui/material';
-import { BootstrapInput } from './CustomField';
+import { TextField } from '@mui/material'
+import React from 'react'
 
-const AppTextField = ({ type = "text", color = 'primary', label = "Email ID", name = "mailId", value, onChange, error, helperText }) => {
-  return (
-    <BootstrapInput
-      color={color}
-      label={label}
-      name={name}
-      type={type}
-      fullWidth
-      margin="normal"
-      variant="standard"
-      value={value}
-      onChange={onChange}
-      error={!!error}
-      helperText={helperText}
-    />
-  );
-};
+const AppTextField = () => {
+    return (
+        <TextField />
+    )
+}
 
-export default AppTextField;
+export default AppTextField
