@@ -1,5 +1,5 @@
 import { AddCircle } from "@mui/icons-material";
-import { Button, Grid2 as Grid, Typography } from "@mui/material";
+import { Button, Drawer, Grid2 as Grid, Typography } from "@mui/material";
 import { PrimaryButton } from "components/AppComponents/AppButton";
 import AppModal from "components/AppComponents/AppModal";
 import AppRowBox from "components/AppComponents/AppRowBox";
@@ -332,8 +332,18 @@ const CommunityOnboarding = () => {
             handleCommunityDetails,
           })}
       </AppModal>
-
-      <EditCommunity open={drawerOpen} onClose={onClose} />
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={onClose}
+        PaperProps={{
+          sx: {
+            padding: 2,
+          },
+        }}
+      >
+        <EditCommunity />
+      </Drawer>
     </Grid>
   );
 };
