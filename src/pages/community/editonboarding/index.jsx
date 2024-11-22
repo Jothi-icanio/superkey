@@ -9,6 +9,7 @@ import {
 import { Grid } from "@mui/system";
 import AppCard from "components/AppComponents/AppCard";
 import { useFormik } from "formik";
+import { useGetUserById } from "hooks/useOnboard";
 import * as Yup from "yup";
 const initialValues = {
   addressDetails: {
@@ -51,6 +52,9 @@ const initialValidationSchema = {
 };
 
 const EditCommunity = ({ onClose }) => {
+  const { data: userData, isLoading } = useGetUserById("98765432345678");
+  console.log(userData, "userdata");
+
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: Yup.object().shape(initialValidationSchema),
