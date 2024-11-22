@@ -11,4 +11,11 @@ const ONBOARD = {
   getUserById: (id) => `/api/community/:${id}`,
 };
 
-export { LOGIN, ONBOARD };
+const COMMUNITY = {
+  getAll: "/api/community",
+};
+const COMMON = {
+  getAllLocation: (type) => `/api/autocomplete?input=${type}`,
+};
+
+export { COMMON, COMMUNITY, LOGIN, ONBOARD };
