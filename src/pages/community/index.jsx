@@ -42,6 +42,7 @@ const onBoardingStepper = [
     initialValues: {
       onBoardingType: "single",
     },
+    height: "20vh",
   },
   {
     title: "Community Address",
@@ -50,8 +51,9 @@ const onBoardingStepper = [
       communityAddress: "",
     },
     initialValidationSchema: {
-      communityAddress: Yup.string().required("Community Address is required"),
+      communityAddress: Yup.object().required("Community Address is required"),
     },
+    height: "60vh",
   },
   {
     title: "Community Name",
@@ -60,8 +62,9 @@ const onBoardingStepper = [
       communityName: "",
     },
     initialValidationSchema: {
-      communityName: Yup.string().required("Community Name is required"),
+      communityName: Yup.object().required("Community Name is required"),
     },
+    height: "40vh",
   },
   {
     title: "Community Details",
@@ -90,7 +93,6 @@ const onBoardingStepper = [
           .min(10, "Mobile number must be at least 10 digits.")
           .max(15, "Mobile number cannot exceed 15 digits.")
           .required("Mobile number is required"),
-        address: Yup.string().required("Address is required"),
       }),
       propertyManager: Yup.object().shape({
         name: Yup.string().required("Name is required"),
@@ -101,18 +103,25 @@ const onBoardingStepper = [
           .min(10, "Mobile number must be at least 10 digits.")
           .max(15, "Mobile number cannot exceed 15 digits.")
           .required("Mobile number is required"),
-        address: Yup.string().required("Address is required"),
       }),
     },
+    height: "60vh",
   },
   {
     title: "Insurance Documentation",
     component: (props) => <InsuranceUpload {...props} />,
+    height: "auto",
   },
   {
     title: "",
-    component: () => <SuccessScreen />,
+    component: ({ handleClose }) => (
+      <SuccessScreen
+        title={"Your Community Onboarded Successfully !"}
+        handleClose={handleClose}
+      />
+    ),
     initialValues: {},
+    height: "auto",
   },
 ];
 const defaultValue = {
@@ -158,9 +167,50 @@ const CommunityOnboarding = () => {
     if (!currentStep) {
       queryParams = "?onboarding=true&cs=0";
     }
-    navigate({
-      pathname: location.pathname,
-      search: !open ? queryParams : "",
+
+    const footer = () => {
+      return (
+        <AppRowBox>
+          <AppGrid item size={{ xs: 2 }}>
+            {activeStep && !finalStep ? (
+              <Button
+                fullWidth
+                color="secondary"
+                onClick={handleBack}
+                variant="outlined"
+              >
+                Back
+              </Button>
+            ) : (
+              <div></div>
+            )}
+          </AppGrid>
+          <AppGrid item size={{ xs: 2 }}>
+            <Button
+              fullWidth
+              color="info"
+              type="submit"
+              onClick={() => handleSubmit()} // Trigger Formik handleSubmit here
+              variant="contained"
+            >
+              {finalStep ? "Done" : "Next"}
+            </Button>
+          </AppGrid>
+        </AppRowBox>
+      );
+    };
+
+    const formik = useFormik({
+      initialValues: initialValues,
+      validationSchema: validationSchema
+        ? Yup.object().shape(validationSchema)
+        : null,
+      enableReinitialize: true,
+      onSubmit: (values) => {
+        handleNext(values);
+        setTouched({});
+        console.log(values);
+      },
     });
   };
 
@@ -249,29 +299,65 @@ const CommunityOnboarding = () => {
 
   const footer = () => {
     return (
-      <AppRowBox>
-        {activeStep && !finalStep ? (
-          <Button
-            color="info"
-            onClick={handleBack}
-            variant="outlined"
-            size="large"
-          >
-            Back
-          </Button>
-        ) : (
-          <div></div>
-        )}
-        <Button
-          color="info"
-          type="submit"
-          onClick={() => handleSubmit()} // Trigger Formik handleSubmit here
-          variant="contained"
-          size="large"
+      <AppGrid container spacing={4}>
+        <AppGrid
+          item
+          size={{ xs: 12 }}
+          container
+          justifyContent="space-between"
+          alignItems="center"
         >
-          {finalStep ? "Done" : "Next"}
-        </Button>
-      </AppRowBox>
+          <AppGrid item>
+            <Typography variant="h4">Communities</Typography>
+          </AppGrid>
+          <AppGrid item>
+            <Button
+              size="large"
+              color="info"
+              startIcon={<AddCircle />}
+              variant="contained"
+              onClick={handleOpen}
+            >
+              Add Community
+            </Button>
+          </AppGrid>
+        </AppGrid>
+        <AppGrid item size={{ xs: 12 }}>
+          <UserTable height={"80vh"} />
+        </AppGrid>
+
+        <AppModal
+          height={finalStep ? "30vh" : "auto"}
+          cardHeight={onBoardingStepper[activeStep].height || undefined}
+          open={open}
+          onClose={handleClose}
+          enableCard={!finalStep}
+          title={onBoardingStepper[activeStep].title}
+          activeStep={activeStep}
+          footer={!finalStep && footer()}
+          steps={onBoardingStepper}
+          align={finalStep ? "center" : ""}
+        >
+          {onBoardingStepper[activeStep]?.component &&
+            onBoardingStepper[activeStep]?.component({
+              setOnboardingType,
+              onBoardingType,
+              formValues: values,
+              errors,
+              touched,
+              setFieldValue,
+              setValues,
+              handleChange,
+              community,
+              handleCommunityDetails,
+              setShow,
+              show,
+              setSelectedFiles,
+              selectedFiles,
+              handleClose,
+            })}
+        </AppModal>
+      </AppGrid>
     );
   };
 
