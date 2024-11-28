@@ -6,7 +6,7 @@ import AppModal from "components/AppComponents/AppModal";
 import AppRowBox from "components/AppComponents/AppRowBox";
 import CircularLoader from "components/CircularLoader";
 import { useFormik } from "formik";
-import { useOnboardCommunity } from "hooks/useOnboard";
+import { useDeleteUserById, useOnboardCommunity } from "hooks/useOnboard";
 import { RadiusStyledButton } from "pages/dashboard/StyledComponent";
 import UserTable from "pages/dashboard/UserTable";
 import React, { Suspense, useState } from "react";
@@ -203,6 +203,18 @@ const CommunityOnboarding = () => {
       updateOnboarding(values);
     }
   };
+  const handleOffBoard = () => {
+    const userId = "98765432345";
+    const payload = {
+      mappings: [
+        {
+          communityId: "567890987",
+          cmcId: "34567890",
+        },
+      ],
+    };
+    deleteUserById({ id: userId, body: payload });
+  };
 
   const handleOnboardingType = (value) => {
     setOnboardingType(value);
@@ -252,6 +264,7 @@ const CommunityOnboarding = () => {
   };
   const { mutate, isLoading, isSuccess, isError, data } =
     useOnboardCommunity(successHandler);
+  const { mutate: deleteUserById } = useDeleteUserById();
 
   const formik = useFormik({
     initialValues: onboarding,
@@ -332,6 +345,7 @@ const CommunityOnboarding = () => {
           height={"80vh"}
           onSelectionChange={handleSelectionChange}
           openPopup={openDrawer}
+          handleOffBoard={handleOffBoard}
         />
       </AppGrid>
       <AppModal

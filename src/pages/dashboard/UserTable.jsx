@@ -112,6 +112,7 @@ export default function UserTable({
   height = 400,
   onSelectionChange,
   openPopup,
+  handleOffBoard,
 }) {
   const theme = useTheme();
   const [page, setPage] = useState(1);
@@ -243,7 +244,7 @@ export default function UserTable({
     return (
       <>
         <MenuItem onClick={handleDrawer}>View details</MenuItem>
-        <MenuItem>Off-board Community</MenuItem>
+        <MenuItem onClick={handleOffBoard}>Off-board Community</MenuItem>
       </>
     );
   };

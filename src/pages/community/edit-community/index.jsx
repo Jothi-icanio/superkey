@@ -145,15 +145,15 @@ const EditCommunity = ({ onClose }) => {
           name: values?.communityManager?.name?.name,
           email: values?.communityManager?.email,
           phone: values?.communityManager?.phone,
-          region: values?.communityManager?.code,
+          region: values?.communityManager?.code?.value,
           managementCompanyId: "string",
         },
         propertyManager: {
           managerId: "string",
-          name: values?.propertyManager?.name,
+          name: values?.propertyManager?.name?.name,
           email: values?.propertyManager?.email,
           phone: values?.propertyManager?.phone,
-          region: values?.propertyManager?.code,
+          region: values?.propertyManager?.code?.value,
           managementCompanyId: "string",
         },
       };
