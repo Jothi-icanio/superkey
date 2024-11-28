@@ -38,14 +38,14 @@ const initialValues = {
   communityManager: {
     name: null,
     code: defaultCountryCode,
-    contactNumber: "",
+    phone: "",
 
     email: "",
   },
   propertyManager: {
     name: null,
     code: defaultCountryCode,
-    contactNumber: "",
+    phone: "",
 
     email: "",
   },
@@ -92,7 +92,7 @@ const initialValidationSchema = {
   }),
   communityManager: Yup.object().shape({
     name: Yup.object().required("Name is required"),
-    contactNumber: Yup.string().required("Contact Number is required"),
+    phone: Yup.string().required("Contact Number is required"),
     code: Yup.object().required("Country Code is required"),
     email: Yup.string()
       .email("Invalid email format")
@@ -100,7 +100,7 @@ const initialValidationSchema = {
   }),
   propertyManager: Yup.object().shape({
     name: Yup.object().required("Name is required"),
-    contactNumber: Yup.string().required("Contact Number is required"),
+    phone: Yup.string().required("Contact Number is required"),
     code: Yup.object().required("Country Code is required"),
     email: Yup.string()
       .email("Invalid email format")
@@ -144,7 +144,7 @@ const EditCommunity = ({ onClose }) => {
           managerId: "string",
           name: values?.communityManager?.name?.name,
           email: values?.communityManager?.email,
-          phone: values?.communityManager?.contactNumber,
+          phone: values?.communityManager?.phone,
           region: values?.communityManager?.code,
           managementCompanyId: "string",
         },
@@ -152,7 +152,7 @@ const EditCommunity = ({ onClose }) => {
           managerId: "string",
           name: values?.propertyManager?.name,
           email: values?.propertyManager?.email,
-          phone: values?.propertyManager?.contactNumber,
+          phone: values?.propertyManager?.phone,
           region: values?.propertyManager?.code,
           managementCompanyId: "string",
         },
@@ -194,7 +194,25 @@ const EditCommunity = ({ onClose }) => {
       },
     }));
   };
+  const handleManger = (event) => {
+    const { name, value } = event.target;
+    const [id, key] = name.split(".");
+    let exitingValue = values[id];
 
+    if (!value?.isCustom) {
+      exitingValue = {
+        ...exitingValue,
+        ...value,
+      };
+      setValues((prevState) => ({
+        ...prevState,
+        [id]: exitingValue,
+      }));
+      setFieldValue(id, exitingValue);
+    } else {
+      handleChange(event);
+    }
+  };
   const onSearch = useDebounceFn((searchString, key) => {
     setSearchString((prev) => ({
       ...prev,
@@ -222,7 +240,7 @@ const EditCommunity = ({ onClose }) => {
             name: communityData?.communityManager?.name,
           },
           email: communityData?.communityManager?.email || "",
-          contactNumber: communityData?.communityManager?.phone || "",
+          phone: communityData?.communityManager?.phone || "",
           code: communityData?.communityManager?.region || "",
         },
         propertyManager: {
@@ -232,7 +250,7 @@ const EditCommunity = ({ onClose }) => {
             name: communityData?.propertyManager?.name,
           },
           email: communityData?.propertyManager?.email || "",
-          contactNumber: communityData?.propertyManager?.phone || "",
+          phone: communityData?.propertyManager?.phone || "",
           code: communityData?.propertyManager?.region || "",
         },
         insuranceDetails: {
@@ -475,7 +493,7 @@ const EditCommunity = ({ onClose }) => {
                   touched.communityManager?.name &&
                   errors.communityManager?.name
                 }
-                onChange={handleChange}
+                onChange={handleManger}
                 onBlur={handleBlur}
                 nameParam="name"
                 searchKey="communityManager"
@@ -532,19 +550,19 @@ const EditCommunity = ({ onClose }) => {
             <AppGrid item size={mobileSize}>
               <AppLabelComponent label={"Mobile Number"}>
                 <TextField
-                  value={values?.communityManager?.contactNumber}
+                  value={values?.communityManager?.phone}
                   fullWidth
                   onChange={handleChange}
                   placeholder="+123423355"
-                  name="communityManager.contactNumber"
+                  name="communityManager.phone"
                   disabled={!enableEdit}
                   error={Boolean(
-                    touched.communityManager?.contactNumber &&
-                      errors.communityManager?.contactNumber
+                    touched.communityManager?.phone &&
+                      errors.communityManager?.phone
                   )}
                   helperText={
-                    touched.communityManager?.contactNumber &&
-                    errors.communityManager?.contactNumber
+                    touched.communityManager?.phone &&
+                    errors.communityManager?.phone
                   }
                 />
               </AppLabelComponent>
@@ -622,19 +640,19 @@ const EditCommunity = ({ onClose }) => {
             <AppGrid item size={mobileSize}>
               <AppLabelComponent label={"Mobile Number"}>
                 <TextField
-                  value={values?.propertyManager?.contactNumber}
+                  value={values?.propertyManager?.phone}
                   fullWidth
                   onChange={handleChange}
                   placeholder="+123423355"
-                  name="propertyManager.contactNumber"
+                  name="propertyManager.phone"
                   disabled={!enableEdit}
                   error={Boolean(
-                    touched.propertyManager?.contactNumber &&
-                      errors.propertyManager?.contactNumber
+                    touched.propertyManager?.phone &&
+                      errors.propertyManager?.phone
                   )}
                   helperText={
-                    touched.propertyManager?.contactNumber &&
-                    errors.propertyManager?.contactNumber
+                    touched.propertyManager?.phone &&
+                    errors.propertyManager?.phone
                   }
                 />
               </AppLabelComponent>
