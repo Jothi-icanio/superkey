@@ -19,10 +19,10 @@ export const useGetUsers = () => {
   return { data, isLoading, isError, error };
 };
 
-export const useGetUserById = (id) => {
+export const useGetCommunityById = (id) => {
   console.log("Received id:", id);
 
-  return useQuery(["userInfo", id], () => api.onboard.getUserById(id), {
+  return useQuery(["userInfo", id], () => api.onboard.getCommunityById(id), {
     keepPreviousData: true,
     onSuccess: (data) => {
       console.log("User data:", data);
@@ -33,10 +33,10 @@ export const useGetUserById = (id) => {
   });
 };
 
-export const useUpdateUserById = () =>
+export const useUpdateCommunityById = () =>
   useMutation({
-    mutationKey: ["updateUserById"],
-    mutationFn: ({ id, body }) => api.onboard.updateUserById(id, body),
+    mutationKey: ["updateCommunityById"],
+    mutationFn: ({ id, body }) => api.onboard.updateCommunityById(id, body),
     onSuccess: (data) => {
       console.log(data, "data");
     },
@@ -44,10 +44,10 @@ export const useUpdateUserById = () =>
       console.error(error);
     },
   });
-export const useDeleteUserById = () =>
+export const useDeleteCommunityById = () =>
   useMutation({
-    mutationKey: ["deleteUserById"],
-    mutationFn: ({ id, body }) => api.onboard.deleteUserById(id, body),
+    mutationKey: ["deleteCommunityById"],
+    mutationFn: ({ id, body }) => api.onboard.deleteCommunityById(id, body),
     onSuccess: (data) => {
       console.log(data, "data");
     },

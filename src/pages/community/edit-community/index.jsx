@@ -11,10 +11,11 @@ import {
   usePropertyManagersQuery,
 } from "hooks/useDropDown";
 import {
-  useDeleteUserById,
-  useGetUserById,
-  useUpdateUserById,
+  useDeleteCommunityById,
+  useGetCommunityById,
+  useUpdateCommunityById,
 } from "hooks/useOnboard";
+
 import { RadiusStyledButton } from "pages/dashboard/StyledComponent";
 
 import { useEffect, useState } from "react";
@@ -121,9 +122,10 @@ const EditCommunity = ({ onClose }) => {
     propertyManager: "",
   });
   const userId = "87654321234567";
-  const { data: userData, isLoading, isError } = useGetUserById(userId);
-  const { mutate: updateUserById, isLoading: isUpdating } = useUpdateUserById();
-  const { mutate: deleteUserById } = useDeleteUserById();
+  const { data: userData, isLoading, isError } = useGetCommunityById(userId);
+  const { mutate: updateUserById, isLoading: isUpdating } =
+    useUpdateCommunityById();
+  const { mutate: deleteUserById } = useDeleteCommunityById();
 
   const { data: communityManagerData } = useCommunityManagersQuery(
     seachString.communityManager

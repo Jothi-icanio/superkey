@@ -6,7 +6,7 @@ import AppModal from "components/AppComponents/AppModal";
 import AppRowBox from "components/AppComponents/AppRowBox";
 import CircularLoader from "components/CircularLoader";
 import { useFormik } from "formik";
-import { useDeleteUserById, useOnboardCommunity } from "hooks/useOnboard";
+import { useDeleteCommunityById, useOnboardCommunity } from "hooks/useOnboard";
 import { RadiusStyledButton } from "pages/dashboard/StyledComponent";
 import UserTable from "pages/dashboard/UserTable";
 import React, { Suspense, useState } from "react";
@@ -264,7 +264,7 @@ const CommunityOnboarding = () => {
   };
   const { mutate, isLoading, isSuccess, isError, data } =
     useOnboardCommunity(successHandler);
-  const { mutate: deleteUserById } = useDeleteUserById();
+  const { mutate: deleteUserById } = useDeleteCommunityById();
 
   const formik = useFormik({
     initialValues: onboarding,
