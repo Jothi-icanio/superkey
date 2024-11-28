@@ -132,8 +132,11 @@ const CommunityOnboarding = () => {
   });
   const [selectedRows, setSelectedRows] = useState([]);
 
-  const { data: communityList, isFetching: communitListFetching } =
-    useCommunityListQuery();
+  const {
+    data: communityList,
+    isFetching: communitListFetching,
+    refetch,
+  } = useCommunityListQuery();
   //handlers
   const openDrawer = () => {
     setEdit(true);
@@ -144,7 +147,7 @@ const CommunityOnboarding = () => {
 
   const handleOpen = () => {
     setOpen(true);
-
+    resetOnboarding();
     let queryParams = "?onboarding=true";
     if (!currentStep) {
       queryParams = "?onboarding=true&cs=0";
@@ -236,6 +239,7 @@ const CommunityOnboarding = () => {
   const successHandler = () => {
     resetOnboarding();
     handleNext();
+    refetch();
   };
 
   const {
