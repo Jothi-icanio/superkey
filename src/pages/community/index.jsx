@@ -6,7 +6,11 @@ import AppModal from "components/AppComponents/AppModal";
 import AppRowBox from "components/AppComponents/AppRowBox";
 import CircularLoader from "components/CircularLoader";
 import { useFormik } from "formik";
-import { useDeleteCommunityById, useOnboardCommunity } from "hooks/useOnboard";
+import {
+  useCommunityListQuery,
+  useDeleteCommunityById,
+  useOnboardCommunity,
+} from "hooks/useCommunity";
 import { RadiusStyledButton } from "pages/dashboard/StyledComponent";
 import UserTable from "pages/dashboard/UserTable";
 import React, { Suspense, useState } from "react";
@@ -65,7 +69,7 @@ const onBoardingStepper = [
           .required("Mobile number is required"),
       }),
       propertyManager: Yup.object().shape({
-        name: Yup.string().required("Name is required"),
+        username: Yup.string().required("Name is required"),
         email: Yup.string()
           .email("Invalid email format")
           .required("Email is required"),
@@ -116,6 +120,8 @@ const CommunityOnboarding = () => {
   const [onBoardingType, setOnboardingType] = useState(
     currentOnboradingType || defaultValue.onBoardingType
   );
+  const finalStep = activeStep == onBoardingStepper?.length - 1;
+
   const [edit, setEdit] = useState(false);
   const [validationSchema, setValidationSchema] = useState(
     onBoardingStepper[activeStep]?.initialValidationSchema || null
@@ -126,7 +132,9 @@ const CommunityOnboarding = () => {
   });
   const [selectedRows, setSelectedRows] = useState([]);
 
-  const finalStep = activeStep == onBoardingStepper?.length - 1;
+  const { data: communityList, isFetching: communitListFetching } =
+    useCommunityListQuery();
+  //handlers
   const openDrawer = () => {
     setEdit(true);
   };
@@ -224,6 +232,21 @@ const CommunityOnboarding = () => {
   const handleSelectionChange = (selected) => {
     setSelectedRows(selected);
   };
+
+  const successHandler = () => {
+    resetOnboarding();
+    handleNext();
+  };
+
+  const {
+    mutate,
+    isLoading: communityCreationLoading,
+    isSuccess,
+    isError,
+    data,
+  } = useOnboardCommunity(successHandler);
+  const { mutate: deleteUserById } = useDeleteCommunityById();
+
   const footer = () => {
     return (
       <AppRowBox>
@@ -258,13 +281,6 @@ const CommunityOnboarding = () => {
       </AppRowBox>
     );
   };
-  const successHandler = () => {
-    resetOnboarding();
-    handleNext();
-  };
-  const { mutate, isLoading, isSuccess, isError, data } =
-    useOnboardCommunity(successHandler);
-  const { mutate: deleteUserById } = useDeleteCommunityById();
 
   const formik = useFormik({
     initialValues: onboarding,
@@ -272,9 +288,34 @@ const CommunityOnboarding = () => {
       ? Yup.object().shape(validationSchema)
       : null,
     enableReinitialize: true,
-    onSubmit: (values) => {
-      updateOnboarding(values);
-      handleNext(values);
+    onSubmit: async (values) => {
+      if (activeStep == onBoardingStepper?.length - 2) {
+        let payload = {
+          name: values?.communityName?.name,
+          contactInfo: values?.communityAddress?.label,
+          communityManager: {
+            managerId: values?.communityManager?.managerId,
+            name: values?.communityManager?.name,
+            email: values?.communityManager?.email,
+            phone: values?.communityManager?.phone,
+            region: values?.communityManager?.countryCode?.value,
+            managementCompanyId: values?.communityManager?.managementCompanyId,
+          },
+          // propertyManager: {
+          //   userId: values?.propertyManager?.userId,
+          //   username: values?.propertyManager?.username,
+          //   email: values?.propertyManager?.email,
+          //   phone: values?.propertyManager?.phone,
+          //   region: values?.propertyManager?.countryCode?.value,
+          //   // managementCompanyId: values?.communityManager?.managementCompanyId
+          // },
+          // documents: []
+        };
+        mutate(payload);
+      } else {
+        handleNext(values);
+        updateOnboarding(values);
+      }
       setTouched({});
     },
   });
@@ -288,6 +329,7 @@ const CommunityOnboarding = () => {
     setTouched,
     resetForm,
   } = formik;
+
   return (
     <AppGrid container spacing={4}>
       <AppGrid
@@ -343,6 +385,8 @@ const CommunityOnboarding = () => {
       <AppGrid item size={{ xs: 12 }}>
         <UserTable
           height={"80vh"}
+          isLoading={communitListFetching}
+          communityList={communityList}
           onSelectionChange={handleSelectionChange}
           openPopup={openDrawer}
           handleOffBoard={handleOffBoard}
@@ -361,24 +405,28 @@ const CommunityOnboarding = () => {
         align={finalStep ? "center" : ""}
         width={onBoardingStepper[activeStep].width || undefined}
       >
-        <Suspense fallback={<CircularLoader />}>
-          {onBoardingStepper[activeStep]?.component &&
-            onBoardingStepper[activeStep]?.component({
-              handleOnboardingType,
-              onBoardingType,
-              formValues: values,
-              errors,
-              touched,
-              setFieldValue,
-              handleChange,
-              community,
-              setShow,
-              show,
-              setSelectedFiles,
-              selectedFiles,
-              handleClose,
-            })}
-        </Suspense>
+        <div
+          style={{ pointerEvents: communityCreationLoading ? "none" : "auto" }}
+        >
+          <Suspense fallback={<CircularLoader />}>
+            {onBoardingStepper[activeStep]?.component &&
+              onBoardingStepper[activeStep]?.component({
+                handleOnboardingType,
+                onBoardingType,
+                formValues: values,
+                errors,
+                touched,
+                setFieldValue,
+                handleChange,
+                community,
+                setShow,
+                show,
+                setSelectedFiles,
+                selectedFiles,
+                handleClose,
+              })}
+          </Suspense>
+        </div>
       </AppModal>
       <Drawer
         open={edit}

@@ -5,7 +5,7 @@ import { loginApi } from "./loginApi";
 
 export const api = {
   login: loginApi,
-  onboard: communityApi,
+  community: communityApi,
   common: commonApi,
   dashboard: dashboardApi,
 };

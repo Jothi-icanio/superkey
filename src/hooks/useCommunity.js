@@ -6,7 +6,7 @@ import { MESSAGE, SEVERITY } from "utils/message";
 export const useGetUsers = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["login"],
-    queryFn: api.onboard.getUsersData,
+    queryFn: api.community.getUsersData,
     onSuccess: (data) => {
       console.log(data);
     },
@@ -15,7 +15,6 @@ export const useGetUsers = () => {
     },
   });
 
-  // Return the necessary states: data, isLoading, isError, error
   return { data, isLoading, isError, error };
 };
 
@@ -61,7 +60,7 @@ export const useOnboardCommunity = (successHandler) => {
   const { updateSnackbar } = useSnackbar();
   const mutation = useMutation({
     mutationKey: ["community-onboarding"],
-    mutationFn: (payload) => api.onboard.createCommunity(payload),
+    mutationFn: (payload) => api.community.createCommunity(payload),
     onSuccess: (data) => {
       console.log("Mutation successful:", data);
       successHandler?.();
@@ -83,6 +82,23 @@ export const useOnboardCommunity = (successHandler) => {
 
   return mutation;
 };
+
+export const useCommunityListQuery = (search) =>
+  useQuery({
+    queryKey: ["community-listing", search],
+    queryFn: () => api.community.getAllCommunityList({ search }),
+    keepPreviousData: true,
+    select: (data) => {
+      // Transform the data here
+      return data.data;
+    },
+    onSuccess: (data) => {
+      console.log("Locations data:", data);
+    },
+    onError: (error) => {
+      console.error("Error fetching locations:", error);
+    },
+  });
 
 // export const useLoginUser = () => {
 //   const navigate = useNavigate();

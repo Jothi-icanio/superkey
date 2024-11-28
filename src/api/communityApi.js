@@ -54,10 +54,23 @@ const deleteCommunityById = async (id, body) => {
   }
 };
 
+const getAllCommunityList = async (queries) => {
+  try {
+    console.log(queries);
+    const requestUrl = addQueryParams(COMMUNITY.getAllCommunityList, queries);
+    const response = await getRequest(requestUrl);
+    return response;
+  } catch (error) {
+    console.error("Error fetching communities:", error);
+    throw error;
+  }
+};
+
 export const communityApi = {
   getUsersData,
   getCommunityById,
   updateCommunityById,
   deleteCommunityById,
   createCommunity,
+  getAllCommunityList,
 };

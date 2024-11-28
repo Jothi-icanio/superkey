@@ -7,14 +7,14 @@ import AppGrid from "components/AppComponents/AppGrid";
 import AppLabelComponent from "components/AppComponents/AppLabelComponent";
 import { useFormik } from "formik";
 import {
-  useCommunityManagersQuery,
-  usePropertyManagersQuery,
-} from "hooks/useDropDown";
-import {
   useDeleteCommunityById,
   useGetCommunityById,
   useUpdateCommunityById,
-} from "hooks/useOnboard";
+} from "hooks/useCommunity";
+import {
+  useCommunityManagersQuery,
+  usePropertyManagersQuery,
+} from "hooks/useDropDown";
 
 import { RadiusStyledButton } from "pages/dashboard/StyledComponent";
 
@@ -79,7 +79,7 @@ const res = [
       region: defaultCountryCode,
       managementCompanyId: "123456789",
     },
-    insuranceValue: null,
+    insuranceValue: { id: "5000000", name: "500000" },
     insuranceCoverage: "5000000",
   },
 ];
