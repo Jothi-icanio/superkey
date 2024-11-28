@@ -54,7 +54,7 @@ const deleteCommunityById = async (id, body) => {
   }
 };
 
-export const onboardApi = {
+export const communityApi = {
   getUsersData,
   getCommunityById,
   updateCommunityById,
