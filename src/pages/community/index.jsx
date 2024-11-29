@@ -250,7 +250,7 @@ const CommunityOnboarding = () => {
     data,
   } = useOnboardCommunity(successHandler);
   const { mutate: deleteUserById } = useDeleteCommunityById();
-
+  console.log(communityList, "communityList");
   const footer = () => {
     return (
       <AppRowBox>
@@ -442,7 +442,7 @@ const CommunityOnboarding = () => {
         //     },
         // }}
       >
-        <EditCommunity onClose={closeDrawer} />
+        <EditCommunity onClose={closeDrawer} communityList={communityList} />
       </Drawer>
     </AppGrid>
   );

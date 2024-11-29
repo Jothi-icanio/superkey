@@ -15,8 +15,7 @@ const getUsersData = async ({ queryKey }) => {
 const getCommunityById = async (id) => {
   try {
     const requestUrl = addQueryParams(ONBOARD.getCommunityById(id));
-    console.log(id, "afteridin api");
-    console.log(requestUrl, "reurl");
+
     const response = await getRequest(requestUrl);
     return response;
   } catch (error) {

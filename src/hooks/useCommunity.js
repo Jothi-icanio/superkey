@@ -21,7 +21,7 @@ export const useGetUsers = () => {
 export const useGetCommunityById = (id) => {
   console.log("Received id:", id);
 
-  return useQuery(["userInfo", id], () => api.onboard.getCommunityById(id), {
+  return useQuery(["userInfo", id], () => api.community.getCommunityById(id), {
     keepPreviousData: true,
     onSuccess: (data) => {
       console.log("User data:", data);
@@ -35,7 +35,7 @@ export const useGetCommunityById = (id) => {
 export const useUpdateCommunityById = () =>
   useMutation({
     mutationKey: ["updateCommunityById"],
-    mutationFn: ({ id, body }) => api.onboard.updateCommunityById(id, body),
+    mutationFn: ({ id, body }) => api.community.updateCommunityById(id, body),
     onSuccess: (data) => {
       console.log(data, "data");
     },
@@ -46,7 +46,7 @@ export const useUpdateCommunityById = () =>
 export const useDeleteCommunityById = () =>
   useMutation({
     mutationKey: ["deleteCommunityById"],
-    mutationFn: ({ id, body }) => api.onboard.deleteCommunityById(id, body),
+    mutationFn: ({ id, body }) => api.community.deleteCommunityById(id, body),
     onSuccess: (data) => {
       console.log(data, "data");
     },
