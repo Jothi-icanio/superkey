@@ -170,7 +170,6 @@ export default function UserTable({
             height: "100%",
           }}
         >
-          {console.log(row, "row")}
           <MoreVert
             onClick={(e) => {
               e.stopPropagation();

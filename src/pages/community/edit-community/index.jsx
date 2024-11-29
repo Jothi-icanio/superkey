@@ -196,7 +196,7 @@ const EditCommunity = ({ onClose, communityId }) => {
   };
   const handleManager = (event) => {
     const { name, value } = event.target;
-    console.log(name, values, "porpygfxgfhgjhkl");
+
     const [id, key] = name.split(".");
     let exitingValue = values[id];
 
@@ -240,7 +240,7 @@ const EditCommunity = ({ onClose, communityId }) => {
           code: data?.communityManager?.region || defaultCountryCode,
         },
         propertyManager: {
-          name: data?.propertyManager?.username || "Lucas",
+          username: data?.propertyManager?.username || "Lucas",
           email: data?.propertyManager?.email || "lucas@gmail.com",
           phone: data?.propertyManager?.phone || "717 222 2222",
           code: data?.propertyManager?.region || defaultCountryCode,
