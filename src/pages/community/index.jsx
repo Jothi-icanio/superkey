@@ -116,6 +116,7 @@ const CommunityOnboarding = () => {
   const [show, setShow] = useState("true");
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [activeStep, setActiveStep] = useState(currentStep);
+  const [communityId, setCommunityId] = useState("");
   const [open, setOpen] = useState(modalOpen);
   const [onBoardingType, setOnboardingType] = useState(
     currentOnboradingType || defaultValue.onBoardingType
@@ -138,7 +139,9 @@ const CommunityOnboarding = () => {
     refetch,
   } = useCommunityListQuery();
   //handlers
-  const openDrawer = () => {
+  const openDrawer = (id) => {
+    console.log(id, "id");
+    setCommunityId(id);
     setEdit(true);
   };
   const closeDrawer = () => {
@@ -394,6 +397,8 @@ const CommunityOnboarding = () => {
           onSelectionChange={handleSelectionChange}
           openPopup={openDrawer}
           handleOffBoard={handleOffBoard}
+          Id={communityId}
+          setId={setCommunityId}
         />
       </AppGrid>
       <AppModal
@@ -442,7 +447,7 @@ const CommunityOnboarding = () => {
         //     },
         // }}
       >
-        <EditCommunity onClose={closeDrawer} communityList={communityList} />
+        <EditCommunity onClose={closeDrawer} communityId={communityId} />
       </Drawer>
     </AppGrid>
   );

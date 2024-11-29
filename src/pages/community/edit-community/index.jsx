@@ -20,11 +20,7 @@ import { RadiusStyledButton } from "pages/dashboard/StyledComponent";
 
 import { useEffect, useState } from "react";
 
-import {
-  countryPhoneCodes,
-  insuranceOptions,
-  pManagers,
-} from "utils/constants";
+import { countryPhoneCodes, insuranceOptions } from "utils/constants";
 import { useDebounceFn } from "utils/helpers";
 import * as Yup from "yup";
 const defaultCountryCode = { label: "+1", value: "+1" };
@@ -37,14 +33,14 @@ const initialValues = {
     zipcode: "",
   },
   communityManager: {
-    name: null,
+    name: "",
     code: defaultCountryCode,
     phone: "",
 
     email: "",
   },
   propertyManager: {
-    name: null,
+    username: "",
     code: defaultCountryCode,
     phone: "",
 
@@ -92,7 +88,7 @@ const initialValidationSchema = {
     zipcode: Yup.string().required("Zipcode is required"),
   }),
   communityManager: Yup.object().shape({
-    name: Yup.object().required("Name is required"),
+    name: Yup.string().required("Name is required"),
     phone: Yup.string().required("Contact Number is required"),
     code: Yup.object().required("Country Code is required"),
     email: Yup.string()
@@ -100,7 +96,7 @@ const initialValidationSchema = {
       .required("Email is required"),
   }),
   propertyManager: Yup.object().shape({
-    name: Yup.object().required("Name is required"),
+    username: Yup.string().required("Name is required"),
     phone: Yup.string().required("Contact Number is required"),
     code: Yup.object().required("Country Code is required"),
     email: Yup.string()
@@ -113,7 +109,7 @@ const initialValidationSchema = {
   }),
 };
 
-const EditCommunity = ({ onClose }) => {
+const EditCommunity = ({ onClose, communityId }) => {
   const [enableEdit, setEnableEdit] = useState(false);
   const [modal, setModal] = useState(false);
   const [offBoard, setOffBoard] = useState(false);
@@ -121,8 +117,12 @@ const EditCommunity = ({ onClose }) => {
     communityManager: "",
     propertyManager: "",
   });
-  const userId = "87654321234567";
-  const { data: userData, isLoading, isError } = useGetCommunityById(userId);
+
+  const {
+    data: communityData,
+    isLoading,
+    isError,
+  } = useGetCommunityById(communityId);
   const { mutate: updateUserById, isLoading: isUpdating } =
     useUpdateCommunityById();
   const { mutate: deleteUserById } = useDeleteCommunityById();
@@ -139,30 +139,28 @@ const EditCommunity = ({ onClose }) => {
     validationSchema: Yup.object().shape(initialValidationSchema),
     onSubmit: (values) => {
       const payload = {
-        communityId: "",
+        communityId: communityId,
         name: values?.addressDetails?.communityName,
         contactInfo: "",
         communityManager: {
-          managerId: "string",
-          name: values?.communityManager?.name?.name,
+          managerId: values?.communityManager?.managerId,
+          name: values?.communityManager?.name,
           email: values?.communityManager?.email,
           phone: values?.communityManager?.phone,
           region: values?.communityManager?.code?.value,
-          managementCompanyId: "string",
+          managementCompanyId: values?.communityManager?.managementCompanyId,
         },
         propertyManager: {
-          managerId: "string",
-          name: values?.propertyManager?.name?.name,
+          managerId: values?.propertyManager?.userId,
+          name: values?.propertyManager?.username,
           email: values?.propertyManager?.email,
           phone: values?.propertyManager?.phone,
           region: values?.propertyManager?.code?.value,
-          managementCompanyId: "string",
+          // managementCompanyId: "string",
         },
       };
-      {
-        console.log(payload, "payload");
-      }
-      updateUserById({ id: userId, body: payload });
+
+      updateUserById({ id: communityId, body: payload });
     },
   });
   const {
@@ -196,8 +194,9 @@ const EditCommunity = ({ onClose }) => {
       },
     }));
   };
-  const handleManger = (event) => {
+  const handleManager = (event) => {
     const { name, value } = event.target;
+    console.log(name, values, "porpygfxgfhgjhkl");
     const [id, key] = name.split(".");
     let exitingValue = values[id];
 
@@ -210,6 +209,7 @@ const EditCommunity = ({ onClose }) => {
         ...prevState,
         [id]: exitingValue,
       }));
+
       setFieldValue(id, exitingValue);
     } else {
       handleChange(event);
@@ -221,48 +221,38 @@ const EditCommunity = ({ onClose }) => {
       [key]: searchString,
     }));
   });
-
   useEffect(() => {
-    if (res?.[0]) {
-      const communityData = res[0];
+    if (communityData?.data) {
+      const data = communityData?.data;
+
       setValues((prevValues) => ({
         ...prevValues,
         addressDetails: {
-          ...prevValues.addressDetails,
-          communityName: communityData?.name || "",
-
-          city: communityData?.city || "",
-          state: communityData?.state || "",
-          zipcode: communityData?.zipcode || "",
+          communityName: data?.name || "",
+          city: data?.city || "Sacramento",
+          state: data?.state || "California",
+          zipcode: data?.zipcode || "96162",
         },
         communityManager: {
-          ...prevValues.communityManager,
-          name: {
-            id: communityData?.communityManager?.managerId,
-            name: communityData?.communityManager?.name,
-          },
-          email: communityData?.communityManager?.email || "",
-          phone: communityData?.communityManager?.phone || "",
-          code: communityData?.communityManager?.region || "",
+          name: data?.communityManager?.name || "Henry",
+          email: data?.communityManager?.email || "henry@gmaiol.com",
+          phone: data?.communityManager?.phone || "718 222 2222",
+          code: data?.communityManager?.region || defaultCountryCode,
         },
         propertyManager: {
-          ...prevValues.propertyManager,
-          name: {
-            id: communityData?.propertyManager?.managerId,
-            name: communityData?.propertyManager?.name,
-          },
-          email: communityData?.propertyManager?.email || "",
-          phone: communityData?.propertyManager?.phone || "",
-          code: communityData?.propertyManager?.region || "",
+          name: data?.propertyManager?.username || "Lucas",
+          email: data?.propertyManager?.email || "lucas@gmail.com",
+          phone: data?.propertyManager?.phone || "717 222 2222",
+          code: data?.propertyManager?.region || defaultCountryCode,
         },
         insuranceDetails: {
-          ...prevValues.insuranceDetails,
-          insuranceValue: communityData?.insuranceValue || "",
-          insuranceCoverage: communityData?.insuranceCoverage || "",
+          insuranceValue: data?.insuranceValue || "",
+          insuranceCoverage: data?.insuranceCoverage || "10000000",
         },
       }));
     }
-  }, [res]);
+  }, [communityData]);
+
   const onDiscard = () => {
     setOffBoard(false);
     setModal(true);
@@ -280,12 +270,12 @@ const EditCommunity = ({ onClose }) => {
         },
       ],
     };
-    deleteUserById({ id: userId, body: payload });
+    deleteUserById({ id: communityId, body: payload });
   };
   const countryCodeSize = { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 };
   const mobileSize = { xs: 9, sm: 9, md: 9, lg: 4, xl: 4 };
   const size = { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 };
-  const communityManagerOptions = communityManagerData?.data;
+
   const Footer = () => {
     return (
       <>
@@ -495,12 +485,12 @@ const EditCommunity = ({ onClose }) => {
                   touched.communityManager?.name &&
                   errors.communityManager?.name
                 }
-                onChange={handleManger}
-                onBlur={handleBlur}
+                onChange={handleManager}
+                // onBlur={handleBlur}
                 nameParam="name"
                 searchKey="communityManager"
-                value={values?.communityManager?.name || ""}
-                options={communityManagerOptions || []}
+                value={values?.communityManager?.name}
+                options={communityManagerData?.data}
                 valueParam="managerId"
                 placeholder="Select Manager"
                 onSearch={onSearch}
@@ -580,18 +570,20 @@ const EditCommunity = ({ onClose }) => {
           <AppGrid item size={size}>
             <AppLabelComponent label={"Name"}>
               <AppAutoComplete
-                name="propertyManager.name"
+                name="propertyManager.username"
                 freeSolo={false}
                 disabled={!enableEdit}
                 error={
-                  touched.propertyManager?.name && errors.propertyManager?.name
+                  touched.propertyManager?.username &&
+                  errors.propertyManager?.username
                 }
-                onChange={handleChange}
-                onBlur={handleBlur}
-                nameParam="name"
+                onChange={handleManager}
+                // onBlur={handleBlur}
+                nameParam="username"
+                valueParam="userId"
                 searchKey="propertyManager"
-                value={values?.propertyManager?.name || ""}
-                options={pManagers}
+                value={values?.propertyManager?.username}
+                options={propertyManagerData?.data}
                 placeholder="Select Manager"
                 onSearch={onSearch}
               />
