@@ -242,11 +242,12 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
       mappings: [
         {
           communityId: communityData?.communityId,
-          cmcId: communityData?.communityManager?.managementCompanyId,
         },
       ],
     };
-    deleteUserById({ id: communityData?.communityId, body: payload });
+
+    deleteUserById(payload);
+    onClose();
   };
   const countryCodeSize = { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 };
   const mobileSize = { xs: 8, sm: 8, md: 8, lg: 4, xl: 4 };

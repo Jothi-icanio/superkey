@@ -27,7 +27,6 @@ const CommunityOnboarding = () => {
 
   // const { refetch } = useCommunityListQuery();
 
-  const { mutate: deleteUserById } = useDeleteCommunityById();
   const {
     mutate: getCommunityList,
     data: communityListData,
@@ -38,7 +37,7 @@ const CommunityOnboarding = () => {
   const handleChangePage = (event, newPage) => {
     fetchData(filters.sort, filters.search, newPage);
     setPage(newPage);
-    setFilters({ ...filters, page: newPage })
+    setFilters({ ...filters, page: newPage });
   };
   //handlers
   const openDrawer = (id) => {
@@ -49,16 +48,17 @@ const CommunityOnboarding = () => {
     setEdit(false);
   };
 
+  const { mutate: deleteUserById } = useDeleteCommunityById();
+  console.log(communityData, "communitydata");
   const handleOffBoard = () => {
     const payload = {
       mappings: [
         {
           communityId: communityData?.communityId,
-          cmcId: communityData?.communityId,
         },
       ],
     };
-    deleteUserById({ id: communityData?.communityId, body: payload });
+    deleteUserById(payload);
   };
 
   const handleSelectionChange = (selected) => {
@@ -69,7 +69,7 @@ const CommunityOnboarding = () => {
     const { value } = e.target;
     setFilters({ ...filters, sort: value });
     fetchData(value, filters.search, 1);
-    setPage(1)
+    setPage(1);
   };
 
   const fetchData = (sort, search, page = filters.page) => {
@@ -90,7 +90,7 @@ const CommunityOnboarding = () => {
 
   const onSearch = useDebounceFn((searchString) => {
     fetchData(filters.sort, searchString, 1);
-    setPage(1)
+    setPage(1);
   }, 500);
 
   const handleSearch = (value) => {
@@ -104,7 +104,7 @@ const CommunityOnboarding = () => {
   }, []);
   const refetch = () => {
     fetchData(filters.sort, filters.search, 1);
-    setPage(1)
+    setPage(1);
   };
   return (
     <AppGrid container spacing={4}>
@@ -171,18 +171,22 @@ const CommunityOnboarding = () => {
           setPage={setPage}
         />
       </AppGrid>
-      <Drawer sx={{
-        "& .MuiDrawer-paper": {
-          width: "50%",
-        },
-      }} open={edit} onClose={closeDrawer} anchor="right">
+      <Drawer
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: "50%",
+          },
+        }}
+        open={edit}
+        onClose={closeDrawer}
+        anchor="right"
+      >
         <EditCommunity
           onClose={closeDrawer}
           communityData={communityData}
           refetch={refetch}
         />
       </Drawer>
-
     </AppGrid>
   );
 };

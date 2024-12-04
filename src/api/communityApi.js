@@ -38,9 +38,9 @@ const createCommunity = async (payload) => {
   return reponse;
 };
 
-const deleteCommunityById = async (id, body) => {
+const deleteCommunityById = async (body) => {
   try {
-    const requestUrl = addQueryParams(COMMUNITY.updateCommunityById(id));
+    const requestUrl = addQueryParams(COMMUNITY.deleteCommunityById);
 
     const response = await putRequest(requestUrl, body);
 

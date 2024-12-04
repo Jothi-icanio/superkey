@@ -15,7 +15,7 @@ const COMMUNITY = {
   getUsers: "/api/veruna/users",
   getCommunityById: (id) => `/api/community/${id}`,
   updateCommunityById: (id) => `/api/community/update/${id}`,
-  deleteCommunityById: (id) => `/api/community/${id}`,
+  deleteCommunityById: `/api/cmcAdminTask/communitiesUnmapCMC`,
 };
 const COMMON = {
   getAllLocation: `/api/autocomplete`,

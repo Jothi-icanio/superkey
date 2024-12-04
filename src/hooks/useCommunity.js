@@ -49,17 +49,28 @@ export const useUpdateCommunityById = (successHandler) => {
   });
   return mutation;
 };
-export const useDeleteCommunityById = () =>
-  useMutation({
+export const useDeleteCommunityById = () => {
+  const { updateSnackbar } = useSnackbar();
+  const mutation = useMutation({
     mutationKey: ["deleteCommunityById"],
-    mutationFn: ({ id, body }) => api.community.deleteCommunityById(id, body),
+    mutationFn: (body) => api.community.deleteCommunityById(body),
     onSuccess: (data) => {
-      console.log(data, "data");
+      updateSnackbar({
+        message: data?.data?.message,
+        severity: SEVERITY.success,
+      });
     },
     onError: (error) => {
-      console.error(error);
+      const errorMessage = error?.response?.data?.token || "An error occurred.";
+      console.error("Mutation error:", errorMessage);
+      updateSnackbar({
+        message: errorMessage,
+        severity: SEVERITY.error,
+      });
     },
   });
+  return mutation;
+};
 // Return the necessary states: data, isLoading, isError, error
 
 export const useOnboardCommunity = (successHandler) => {

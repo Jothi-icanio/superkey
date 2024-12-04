@@ -42,14 +42,14 @@ export default function UserTable({
   handleChangePage,
   page,
   setPage,
-  selectedRows
+  selectedRows,
 }) {
   const theme = useTheme();
   // const [page, setPage] = useState(1);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [modal, setModal] = useState(false)
+  const [modal, setModal] = useState(false);
 
   const pageSize = 10;
 
@@ -87,7 +87,9 @@ export default function UserTable({
       field: "insuredCoverage",
       headerName: "Insured",
       renderCell: (row) => {
-        return <Typography>{formatAsDollar(row?.insuredCoverage) ?? "-"}</Typography>;
+        return (
+          <Typography>{formatAsDollar(row?.insuredCoverage) ?? "-"}</Typography>
+        );
       },
     },
     {
@@ -122,7 +124,7 @@ export default function UserTable({
           <MoreVert
             onClick={(e) => {
               e.stopPropagation();
-              onSelectionChange([])
+              onSelectionChange([]);
               setMenuAnchorEl(e.currentTarget);
               setCommunityInfo(row);
             }}
@@ -159,9 +161,8 @@ export default function UserTable({
   };
   const handleModal = () => {
     setModal(!modal);
+    handleMenuAnchorClose();
   };
-
-
 
   const renderSortComponent = () => {
     return (
@@ -212,7 +213,10 @@ export default function UserTable({
       </>
     );
   };
-
+  const handleConfirm = () => {
+    handleOffBoard();
+    setModal(false);
+  };
   return (
     <Box sx={communityStyles.container(height)}>
       <>
@@ -257,13 +261,10 @@ export default function UserTable({
       <ConfirmationModal
         open={modal}
         onClose={handleModal}
-        message={
-          "Do you want to off-board the community?"
-
-        }
+        message={"Do you want to off-board the community?"}
         confirmLabel={"Yes"}
         cancelLabel={"No"}
-        onConfirm={handleModal}
+        onConfirm={handleConfirm}
         onCancel={handleModal}
       />
     </Box>
