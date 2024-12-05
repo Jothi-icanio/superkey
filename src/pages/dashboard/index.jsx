@@ -21,6 +21,7 @@ import UserTable from "../community/CommunityTable";
 import RenewalPieChart from "./RenewalPieChart";
 import TaskTable from "./TaskTable";
 import VerunaCommunitiesTable from "pages/community/onboarding/VerunaCommunitiesTable";
+import { useNavigate } from "react-router";
 
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 const tabs = [
@@ -76,6 +77,7 @@ export default function DashboardDefault() {
     fetchActiveAndCompletedTaskByFilter(reqBody);
   };
 
+  const navigate = useNavigate()
   return (
     <AppGrid container rowSpacing={3} columnSpacing={2}>
       <AppGrid size={{ xs: 12 }}>
@@ -108,7 +110,7 @@ export default function DashboardDefault() {
           <AppGrid size={{ xs: 12 }}>
             <AppSkeletonWrapper loading={isWidgetLoading} height={'200px'}>
 
-              <MainCard title="Communities" secondary={"Full View"} >
+              <MainCard title="Communities" secondary={"Full View"} secondaryAction={() => navigate('/community/onboarding')} >
                 <Stack spacing={2}>
                   <Typography variant="h6" >Communities Managed</Typography>
                   <Typography variant="subtitle2" color="success">
