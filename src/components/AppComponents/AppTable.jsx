@@ -100,7 +100,7 @@ const AppTable = ({
               const isSelected = selected.indexOf(row[rowKey]) !== -1;
               return (
                 <TableRow
-                  key={row[rowKey]}
+                  key={index}
                   hover
                   role="checkbox"
                   aria-checked={isSelected}

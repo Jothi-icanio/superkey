@@ -1,14 +1,14 @@
 import { Drawer } from "@mui/material";
 
 import AppGrid from "components/AppComponents/AppGrid";
-import { useCommunityList, useDeleteCommunityById } from "hooks/useCommunity";
+import { useCommunityList, useDeleteCommunityById, useVerunaCommunityListQuery } from "hooks/useCommunity";
 import CommunityTable from "pages/community/CommunityTable";
 import { RadiusStyledButton } from "components/StyledComponents";
 import { useEffect, useState } from "react";
 import { useDebounceFn } from "utils/helpers";
 import EditCommunity from "./edit-community";
 import OnboardingIndex from "./onboarding";
-import VerunaCommunitiesTable from "./onboarding/VerunaCommunitiesTable";
+import VerunaCommunitiesTable, { rows } from "./onboarding/VerunaCommunitiesTable";
 
 const initialValue = {
   page: 1,
@@ -34,6 +34,8 @@ const CommunityOnboarding = () => {
     data: communityListData,
     isLoading: communityListLoading,
   } = useCommunityList();
+
+  const { data: verunaData, isLoading: verunaLoading } = useVerunaCommunityListQuery()
 
   const { content } = communityListData?.data ?? {};
   const handleChangePage = (event, newPage) => {
@@ -111,6 +113,29 @@ const CommunityOnboarding = () => {
     fetchData(filters.sort, filters.search, 1);
     setPage(1)
   };
+
+
+  /////////
+  const [searchTerm, setSearchTerm] = useState("");
+  const pageSize = 10;
+  const handleUISearch = (searchTerm) => {
+    setSearchTerm(searchTerm);
+    setPage(1);
+  }
+  const filteredRows = rows.filter((row) =>
+    Object.values(row).some((value) =>
+      String(value).toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
+  const paginatedRows = filteredRows.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
+
+
+  ///////
+
   return (
     <AppGrid container spacing={4}>
       <AppGrid
@@ -159,23 +184,18 @@ const CommunityOnboarding = () => {
       <AppGrid item size={{ xs: 12 }}>
         <VerunaCommunitiesTable
           height={"80vh"}
-          isLoading={communityListLoading}
-          communityList={communityListData?.data || []}
-          onSelectionChange={handleSelectionChange}
-          openPopup={openDrawer}
-          handleOffBoard={handleOffBoard}
-          communityInfo={communityData}
-          setCommunityInfo={setCommunitydata}
-          filters={filters}
-          handleChangeRadio={handleChangeRadio}
-          handleSearch={handleSearch}
-          handleChangePage={handleChangePage}
+          isLoading={verunaLoading}
+          totalItems={filteredRows.length}
+          tableData={verunaData?.length ? verunaData : paginatedRows}
           page={page}
-          selectedRows={selectedRows}
-          setPage={setPage}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          pageSize={pageSize}
+          handleChangePage={handleChangePage}
+          handleUISearch={handleUISearch}
         />
       </AppGrid>
-      <AppGrid item size={{ xs: 12 }}>
+      {/* <AppGrid item size={{ xs: 12 }}>
         <CommunityTable
           height={"80vh"}
           isLoading={communityListLoading}
@@ -193,7 +213,7 @@ const CommunityOnboarding = () => {
           selectedRows={selectedRows}
           setPage={setPage}
         />
-      </AppGrid>
+      </AppGrid> */}
       <Drawer sx={{
         "& .MuiDrawer-paper": {
           width: "50%",

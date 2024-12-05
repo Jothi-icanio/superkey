@@ -77,6 +77,20 @@ const getCommunityList = async (body) => {
   return response;
 };
 
+const getAllVerunaCommunityList = async (queries) => {
+  try {
+    const requestUrl = addQueryParams(
+      COMMUNITY.getAllVerunaCommunityList,
+      queries
+    );
+    const response = await getRequest(requestUrl);
+    return response;
+  } catch (error) {
+    console.error("Error fetching communities:", error);
+    throw error;
+  }
+};
+
 export const communityApi = {
   getUsersData,
   getCommunityById,
@@ -84,5 +98,6 @@ export const communityApi = {
   deleteCommunityById,
   createCommunity,
   getAllCommunityList,
+  getAllVerunaCommunityList,
   getCommunityList,
 };

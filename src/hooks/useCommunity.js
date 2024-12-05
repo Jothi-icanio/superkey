@@ -108,6 +108,20 @@ export const useCommunityList = () => {
   });
 };
 
+export const useVerunaCommunityListQuery = (search) =>
+  useQuery({
+    queryKey: ["veruna-community-listing", search],
+    queryFn: () => api.community.getAllVerunaCommunityList({ search }),
+    keepPreviousData: true,
+    select: (data) => {
+      // Transform the data here
+      return data.data;
+    },
+    onSuccess: (data) => {},
+    onError: (error) => {
+      console.error("Error fetching locations:", error);
+    },
+  });
 // export const useLoginUser = () => {
 //   const navigate = useNavigate();
 //   const {setAuthCookie}=useAuthCookies()
