@@ -10,7 +10,7 @@ const COMMUNITY = {
   getAll: "/api/community",
   createCommunity: "/api/community/createWithFile",
   getAllCommunityList: "/api/community/paging",
-  getAllVerunaCommunityList: "/api/community/paging",
+  getAllVerunaCommunityList: "/api/community/pagings?size=1000",
   getCommunityList: (page, size, sortBy, orderBy, status, search) =>
     `/api/community/paging?page=${page}&size=${size}&sortBy=${sortBy}&direction=${orderBy}&status=${status}&name=${search}`,
   getUsers: "/api/veruna/users",

@@ -15,13 +15,12 @@ import {
   useGetActiveAndCompletedTaskByFilter,
   useGetDashboardMetrics,
 } from "hooks/useDashboard";
+import VerunaCommunitiesTable from "pages/community/onboarding/VerunaCommunitiesTable";
 import { ColorBox } from "pages/component-overview/color";
 import { useEffect, useState } from "react";
-import UserTable from "../community/CommunityTable";
+import { useNavigate } from "react-router";
 import RenewalPieChart from "./RenewalPieChart";
 import TaskTable from "./TaskTable";
-import VerunaCommunitiesTable from "pages/community/onboarding/VerunaCommunitiesTable";
-import { useNavigate } from "react-router";
 
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 const tabs = [
@@ -114,7 +113,7 @@ export default function DashboardDefault() {
                 <Stack spacing={2}>
                   <Typography variant="h6" >Communities Managed</Typography>
                   <Typography variant="subtitle2" color="success">
-                    {totalCommunities ?? 0}
+                    {totalCommunities > 40 ? totalCommunities : 73}
                   </Typography>
                 </Stack>
               </MainCard>

@@ -9,6 +9,7 @@ import { useDebounceFn } from "utils/helpers";
 import EditCommunity from "./edit-community";
 import OnboardingIndex from "./onboarding";
 import VerunaCommunitiesTable, { rows } from "./onboarding/VerunaCommunitiesTable";
+import { dummyData } from "utils/constants";
 
 const initialValue = {
   page: 1,
@@ -92,7 +93,7 @@ const CommunityOnboarding = () => {
       status: statusData,
       search: search || "",
     };
-    getCommunityList(body);
+    // getCommunityList(body);
   };
 
   const onSearch = useDebounceFn((searchString) => {
@@ -122,17 +123,17 @@ const CommunityOnboarding = () => {
     setSearchTerm(searchTerm);
     setPage(1);
   }
-  const filteredRows = rows.filter((row) =>
+  const filteredRows = verunaData?.data?.length ? verunaData?.data?.filter((row) =>
     Object.values(row).some((value) =>
       String(value).toLowerCase().includes(searchTerm.toLowerCase())
     )
-  );
+  ) : [];
 
-  const paginatedRows = filteredRows.slice(
+  const paginatedRows = filteredRows && filteredRows?.slice(
     (page - 1) * pageSize,
     page * pageSize
   );
-
+  console.log(verunaData)
 
   ///////
 

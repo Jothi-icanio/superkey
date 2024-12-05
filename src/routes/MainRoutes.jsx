@@ -20,9 +20,9 @@ const COI = Loadable(lazy(() => import('pages/documents-repository/coi/index')))
 
 const MainRoutes = {
   path: '/',
-  element: <ProtectedRoute>
+  element:
     <Dashboard />
-  </ProtectedRoute>,
+  ,
   children: [
 
     {

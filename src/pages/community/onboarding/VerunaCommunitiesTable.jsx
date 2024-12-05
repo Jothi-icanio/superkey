@@ -2,6 +2,7 @@ import { MoreVert, SwapVert } from "@mui/icons-material";
 import {
     FormControl,
     FormControlLabel,
+    IconButton,
     MenuItem,
     Radio,
     RadioGroup,
@@ -163,7 +164,7 @@ export default function VerunaCommunityTable({
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const columns = [
         {
-            field: "id",
+            field: "index",
             headerName: "S.No",
             headerClassName: "bold-header",
             renderCell: (row, indx) => {
@@ -176,22 +177,34 @@ export default function VerunaCommunityTable({
             flex: 1,
         },
         {
-            field: "propertyManager",
-            headerName: "Community/Property Manager",
+            field: `type`,
+            headerName: "Document Type",
         },
         {
-            field: "claims",
-            headerName: "Claims",
-            flex: 1,
+            field: "country",
+            headerName: "Country",
         },
         {
-            field: "insured",
-            headerName: "Insured",
-            flex: 1,
+            field: "state",
+            headerName: "State",
         },
+        {
+            field: "city",
+            headerName: "City",
+        },
+        //Future use
+        // {
+        //   field: "claims",
+        //   headerName: "Claims",
+        //   renderCell: (row) => {
+        //     return <Typography color="success">{row?.claims}</Typography>;
+        //   },
+        // },
+
         {
             field: "status",
             headerName: "Status",
+            align: "center",
             renderCell: (row) => {
                 return (
                     <Typography
@@ -201,7 +214,7 @@ export default function VerunaCommunityTable({
                         gap={0.5}
                     >
                         <FiberManualRecordIcon fontSize="12px" />
-                        Active
+                        {"Active"}
                     </Typography>
                 );
 
@@ -210,24 +223,19 @@ export default function VerunaCommunityTable({
         {
             field: "action",
             headerName: "Action",
+            align: "center",
             renderCell: (row) => (
-                <div
-                    style={{
-                        display: "flex",
-                        paddingLeft: "10px",
-                        height: "100%",
-                    }}
-                >
+                <IconButton>
                     <MoreVert
                         onClick={(e) => {
                             e.stopPropagation();
+                            onSelectionChange([])
+                            setMenuAnchorEl(e.currentTarget);
+                            setCommunityInfo(row);
                         }}
-                        sx={{
-                            cursor: "pointer",
-                            color: "#858585",
-                        }}
+                        color="secondary"
                     />
-                </div>
+                </IconButton>
             ),
         },
     ];

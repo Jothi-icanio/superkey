@@ -115,7 +115,7 @@ export const useVerunaCommunityListQuery = (search) =>
     keepPreviousData: true,
     select: (data) => {
       // Transform the data here
-      return data.data;
+      return data;
     },
     onSuccess: (data) => {},
     onError: (error) => {

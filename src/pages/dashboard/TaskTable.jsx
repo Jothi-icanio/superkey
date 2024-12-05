@@ -74,7 +74,7 @@ export const ColorRow = ({
               <Box
                 variant="h3"
                 color={theme.palette.text.primary}
-                sx={{ flexBasis: "20%", textAlign: "center" }}
+                sx={{ flexBasis: "15%", textAlign: "center" }}
               >
                 <Dot color={status} />
               </Box>
@@ -82,9 +82,9 @@ export const ColorRow = ({
               <Typography
                 variant="subtitle1"
                 color={theme.palette.text.primary}
-                sx={{ flexBasis: "20%", textAlign: "center" }}
+                sx={{ flexBasis: "21%", textAlign: "center" }}
               >
-                {property}
+                -
               </Typography>
             </Box>
 
@@ -127,7 +127,7 @@ const TableHeader = () => {
       <Typography
         variant="subtitle1"
         color={theme.palette.text.primary}
-        sx={{ flexBasis: "75%", textAlign: "left" }}
+        sx={{ flexBasis: "85%", textAlign: "left" }}
       ></Typography>
 
       <Typography
