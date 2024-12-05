@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import UserTable from "../community/CommunityTable";
 import RenewalPieChart from "./RenewalPieChart";
 import TaskTable from "./TaskTable";
+import VerunaCommunitiesTable from "pages/community/onboarding/VerunaCommunitiesTable";
 
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 const tabs = [
@@ -107,9 +108,9 @@ export default function DashboardDefault() {
           <AppGrid size={{ xs: 12 }}>
             <AppSkeletonWrapper loading={isWidgetLoading} height={'200px'}>
 
-              <MainCard title="Communities" secondary={"Full View"}>
+              <MainCard title="Communities" secondary={"Full View"} >
                 <Stack spacing={2}>
-                  <Typography variant="h6">Communities Managed</Typography>
+                  <Typography variant="h6" >Communities Managed</Typography>
                   <Typography variant="subtitle2" color="success">
                     {totalCommunities ?? 0}
                   </Typography>
@@ -182,8 +183,16 @@ export default function DashboardDefault() {
           title={"Community Users"}
           count={data?.data?.totalSize ?? data?.data?.length}
         >
-          <UserTable
-            tableData={data?.data?.records ?? data?.data}
+          <VerunaCommunitiesTable
+            communityList={[
+              {
+                "communityId": "001bn00001CjK3CAAV",
+                "name": "The Arbor Condominium Association, Inc."
+              },
+              {
+                "communityId": "001bn00001CjNNdAAN",
+                "name": "Fifteen Hundred Medical Office Condominium Association, Inc."
+              }]}
             isLoading={isLoading}
           />
         </MainCard>

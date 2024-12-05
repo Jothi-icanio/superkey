@@ -1,23 +1,10 @@
-import { MoreVert, RadioButtonChecked, RadioButtonUnchecked, SwapVert } from "@mui/icons-material";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import {
-    Checkbox,
-    FormControl,
-    FormControlLabel,
-    IconButton,
-    Radio,
-    RadioGroup,
-    Typography,
+    Typography
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { Box } from "@mui/system";
-import ConfirmationModal from "components/AppComponents/AppConfirmationModal";
-import AppMenu from "components/AppComponents/AppMenu";
 import AppTable from "components/AppComponents/AppTable";
-import AppTableSearch from "components/AppComponents/AppTableSearch";
 import { getStatus } from "components/AppComponents/CustomField";
-import { communityStyles, StyledMenuItem } from "components/StyledComponents";
-import { formatAsDollar } from "pages/community/onboarding/utils";
+import { communityStyles } from "components/StyledComponents";
 import { useState } from "react";
 
 const options = [
@@ -28,17 +15,13 @@ const options = [
 ];
 
 export default function VerunaCommunitiesTable({
-    isLoading,
     height = 400,
-    onSelectionChange,
-    communityList,
-
-    handleChangePage,
-    page,
-    selectedRows
+    isLoading = false,
+    communityList = [],
 }) {
 
-
+    const [searchTerm, setSearchTerm] = useState("");
+    const [page, setPage] = useState(1)
     const pageSize = 10;
 
     const columns = [
@@ -50,6 +33,7 @@ export default function VerunaCommunitiesTable({
                 return <Typography>{(page - 1) * pageSize + indx + 1}</Typography>;
             },
         },
+
         {
             field: "name",
             headerName: "Community Name",
@@ -60,6 +44,12 @@ export default function VerunaCommunitiesTable({
     ];
 
 
+    const filteredRows = communityList?.filter((row) =>
+        Object.values(row).some((value) =>
+            String(value).toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    );
+
 
 
     return (
@@ -68,17 +58,13 @@ export default function VerunaCommunitiesTable({
 
 
                 <AppTable
+                    checkBox={false}
                     rowKey="communityId"
                     isLoading={isLoading}
                     columns={columns}
-                    rows={flatRows || []}
+                    rows={filteredRows || []}
                     getStatus={getStatus}
-                    onSelectionChange={onSelectionChange}
-                    currentPage={page}
-                    totalItems={communityList?.totalElements}
                     pageSize={pageSize}
-                    onPageChange={handleChangePage}
-                    selected={selectedRows}
                 />
             </>
 

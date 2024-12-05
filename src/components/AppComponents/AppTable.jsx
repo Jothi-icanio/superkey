@@ -27,7 +27,8 @@ const AppTable = ({
   totalItems,
   pageSize,
   onPageChange,
-  selected = []
+  selected = [],
+  checkBox = true,
 }) => {
 
   const rowCount = rows.length;
@@ -66,16 +67,16 @@ const AppTable = ({
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell padding="checkbox">
+            {checkBox && <TableCell padding="checkbox">
               <Checkbox
                 color="success"
                 indeterminate={numSelected > 0 && numSelected < rowCount}
                 checked={rowCount > 0 && numSelected === rowCount}
                 onChange={onSelectAllClick}
               />
-            </TableCell>
+            </TableCell>}
             {columns.map((col, index) => (
-              <TableCell key={col.field} align={index > 1 ? "center" : "left"}>
+              <TableCell key={col.field} align={checkBox ? index > 1 ? "center" : "left" : index == 0 ? 'center' : "left"}>
                 <BoldTypographyHeader>{col.headerName}</BoldTypographyHeader>
               </TableCell>
             ))}
@@ -105,19 +106,19 @@ const AppTable = ({
                   aria-checked={isSelected}
                   selected={isSelected}
                 >
-                  <TableCell padding="checkbox">
+                  {checkBox && <TableCell padding="checkbox">
                     <Checkbox
                       color="success"
                       padding="0px"
                       checked={isSelected}
                       onClick={() => handleRowClick(row[rowKey])}
                     />
-                  </TableCell>
+                  </TableCell>}
                   {columns.map((col, idx) => (
                     <TableCell
                       key={col.field}
                       sx={customStyles[col.field]}
-                      align={idx > 1 ? "center" : "left"}
+                      align={checkBox ? idx > 1 ? "center" : "left" : idx == 0 ? 'center' : "left"}
                     >
                       {col.renderCell
                         ? col.renderCell(row, index)

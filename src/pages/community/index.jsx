@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useDebounceFn } from "utils/helpers";
 import EditCommunity from "./edit-community";
 import OnboardingIndex from "./onboarding";
+import VerunaCommunitiesTable from "./onboarding/VerunaCommunitiesTable";
 
 const initialValue = {
   page: 1,
@@ -155,7 +156,25 @@ const CommunityOnboarding = () => {
           )}
         </AppGrid>
       </AppGrid>
-
+      <AppGrid item size={{ xs: 12 }}>
+        <VerunaCommunitiesTable
+          height={"80vh"}
+          isLoading={communityListLoading}
+          communityList={communityListData?.data || []}
+          onSelectionChange={handleSelectionChange}
+          openPopup={openDrawer}
+          handleOffBoard={handleOffBoard}
+          communityInfo={communityData}
+          setCommunityInfo={setCommunitydata}
+          filters={filters}
+          handleChangeRadio={handleChangeRadio}
+          handleSearch={handleSearch}
+          handleChangePage={handleChangePage}
+          page={page}
+          selectedRows={selectedRows}
+          setPage={setPage}
+        />
+      </AppGrid>
       <AppGrid item size={{ xs: 12 }}>
         <CommunityTable
           height={"80vh"}
