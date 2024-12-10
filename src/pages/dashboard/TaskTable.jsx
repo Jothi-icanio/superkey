@@ -1,3 +1,4 @@
+import { CheckCircleOutline, CheckCircleOutlineOutlined } from "@mui/icons-material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -13,7 +14,10 @@ const getStatus = (status) => {
     case "COMPLETED":
       color = "success";
       break;
-    case "PENDING":
+    case "Normal":
+      color = "warning";
+      break;
+    case "High":
       color = "error";
       break;
     default:
@@ -30,8 +34,9 @@ export const ColorRow = ({
   dark,
   main,
   borderRadius = "15px",
-  status = "",
-  property = "",
+  status = "Not Started",
+  priority = "Low",
+  isCompleted
 }) => {
   const theme = useTheme();
   return (
@@ -47,7 +52,7 @@ export const ColorRow = ({
         {title && (
           <>
             <Typography sx={{ flexBasis: "5%" }}>
-              <CheckCircleIcon />
+              <CheckCircleOutlineOutlined color={isCompleted ? "success" : "secondary"} />
             </Typography>
 
             <Box
@@ -76,15 +81,15 @@ export const ColorRow = ({
                 color={theme.palette.text.primary}
                 sx={{ flexBasis: "15%", textAlign: "center" }}
               >
-                <Dot color={status} />
+                {status}
               </Box>
 
               <Typography
                 variant="subtitle1"
                 color={theme.palette.text.primary}
-                sx={{ flexBasis: "21%", textAlign: "center" }}
+                sx={{ flexBasis: "10%", textAlign: "center" }}
               >
-                -
+                <Dot color={priority} />
               </Typography>
             </Box>
 
@@ -105,6 +110,7 @@ export const ColorRow = ({
                 <MessageIcon />
               </Button>
             </Box>
+
           </>
         )}
       </Box>
@@ -127,13 +133,13 @@ const TableHeader = () => {
       <Typography
         variant="subtitle1"
         color={theme.palette.text.primary}
-        sx={{ flexBasis: "85%", textAlign: "left" }}
+        sx={{ flexBasis: "75%", textAlign: "left" }}
       ></Typography>
 
       <Typography
         variant="h6"
         color={theme.palette.text.primary}
-        sx={{ flexBasis: "20%", textAlign: "center" }}
+        sx={{ flexBasis: "15%", textAlign: "center" }}
       >
         Status
       </Typography>
@@ -141,11 +147,11 @@ const TableHeader = () => {
       <Typography
         variant="h6"
         color={theme.palette.text.primary}
-        sx={{ flexBasis: "20%", textAlign: "center" }}
+        sx={{ flexBasis: "10%", textAlign: "center" }}
       >
-        Property
+        Priority
       </Typography>
-      <Box sx={{ flexBasis: "11%" }} />
+      <Box sx={{ flexBasis: "1%" }} />
       <Typography
         variant="h6"
         color={theme.palette.text.primary}
@@ -157,7 +163,8 @@ const TableHeader = () => {
     </Box>
   );
 };
-const TaskTable = ({ tableData, loading }) => {
+const TaskTable = ({ selectedTab, tableData, loading }) => {
+  let completed = selectedTab != 'active';
   return (
     <Stack sx={{ mt: 1 }}>
       <TableHeader />
@@ -168,15 +175,16 @@ const TaskTable = ({ tableData, loading }) => {
               {tableData?.length > 0 ? (
                 <>
                   {tableData?.map((row, index) => {
-                    const status = getStatus(row?.status);
+                    const priority = getStatus(row?.priority);
                     return (
                       <ColorRow
                         key={row?.index}
                         title={row?.description}
-                        status={status}
-                        property={row?.property}
+                        status={!completed ? row?.status : "Completed"}
+                        priority={priority}
+                        isCompleted={completed}
                         bgcolor={
-                          row?.status === "COMPLETED"
+                          completed || row?.priority !== "High"
                             ? "grey.300"
                             : `error.lighter`
                         }

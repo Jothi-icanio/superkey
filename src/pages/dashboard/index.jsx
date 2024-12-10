@@ -68,7 +68,7 @@ export default function DashboardDefault() {
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
-    fetchData(newValue);
+    // fetchData(newValue);
   };
   const handleClose = () => {
     setOpen(false);
@@ -222,7 +222,7 @@ export default function DashboardDefault() {
             value={selectedTab}
             tabs={tabs}
           />
-          <TaskTable tableData={taskData?.data || []} loading={isTaskLoading} />
+          <TaskTable selectedTab={selectedTab} tableData={taskData?.data || []} loading={isTaskLoading} />
         </MainCard>
       </AppGrid>
     </AppGrid>

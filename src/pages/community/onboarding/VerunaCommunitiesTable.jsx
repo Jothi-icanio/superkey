@@ -174,16 +174,19 @@ export default function VerunaCommunityTable({
         {
             field: "name",
             headerName: "Community Name",
-            flex: 1,
+            // flex: 1,
+        },
+        {
+            field: "estimatedAgentCommission",
+            headerName: "Estimated Agent Commission",
+            align: "center",
+
         },
         {
             field: `type`,
-            headerName: "Document Type",
+            headerName: "Type",
         },
-        {
-            field: "country",
-            headerName: "Country",
-        },
+
         {
             field: "state",
             headerName: "State",
@@ -204,7 +207,6 @@ export default function VerunaCommunityTable({
         {
             field: "status",
             headerName: "Status",
-            align: "center",
             renderCell: (row) => {
                 return (
                     <Typography
@@ -220,24 +222,24 @@ export default function VerunaCommunityTable({
 
             },
         },
-        {
-            field: "action",
-            headerName: "Action",
-            align: "center",
-            renderCell: (row) => (
-                <IconButton>
-                    <MoreVert
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onSelectionChange([])
-                            setMenuAnchorEl(e.currentTarget);
-                            setCommunityInfo(row);
-                        }}
-                        color="secondary"
-                    />
-                </IconButton>
-            ),
-        },
+        // {
+        //     field: "action",
+        //     headerName: "Action",
+        //     align: "center",
+        //     renderCell: (row) => (
+        //         <IconButton>
+        //             <MoreVert
+        //                 onClick={(e) => {
+        //                     e.stopPropagation();
+        //                     onSelectionChange([])
+        //                     setMenuAnchorEl(e.currentTarget);
+        //                     setCommunityInfo(row);
+        //                 }}
+        //                 color="secondary"
+        //             />
+        //         </IconButton>
+        //     ),
+        // },
     ];
 
     const renderMenuComponent = () => {

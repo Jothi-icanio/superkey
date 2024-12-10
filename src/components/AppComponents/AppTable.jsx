@@ -76,7 +76,7 @@ const AppTable = ({
               />
             </TableCell>}
             {columns.map((col, index) => (
-              <TableCell key={col.field} align={checkBox ? index > 1 ? "center" : "left" : index == 0 ? 'center' : "left"}>
+              <TableCell key={col.field} align={checkBox ? index > 1 ? "center" : "left" : index == 0 ? 'center' : col?.align ?? "left"}>
                 <BoldTypographyHeader>{col.headerName}</BoldTypographyHeader>
               </TableCell>
             ))}
@@ -118,7 +118,7 @@ const AppTable = ({
                     <TableCell
                       key={col.field}
                       sx={customStyles[col.field]}
-                      align={checkBox ? idx > 1 ? "center" : "left" : idx == 0 ? 'center' : "left"}
+                      align={checkBox ? idx > 1 ? "center" : "left" : idx == 0 ? 'center' : col?.align ?? "left"}
                     >
                       {col.renderCell
                         ? col.renderCell(row, index)
