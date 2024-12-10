@@ -10,7 +10,6 @@ import AppGrid from "components/AppComponents/AppGrid";
 import AppModal from "components/AppComponents/AppModal";
 import AppSkeletonWrapper from "components/AppComponents/AppSkeletonWrapper";
 import MainTabs from "components/MainTabs";
-import { useGetUsers } from "hooks/useCommunity";
 import {
   useGetActiveAndCompletedTaskByFilter,
   useGetDashboardMetrics,
@@ -28,11 +27,25 @@ const tabs = [
   { label: "Completed", value: "completed" },
 ];
 
+const renewalChartData = [
+  {
+    "name": "30 Days",
+    "value": 2
+  },
+  {
+    "name": "60 Days",
+    "value": 6
+  },
+  {
+    "name": "90 Days",
+    "value": 10
+  }
+]
+
 export default function DashboardDefault() {
   const [selectedTab, setSelectedTab] = useState(tabs[0].value);
   const [open, setOpen] = useState(false);
 
-  const { data, isLoading } = useGetUsers();
   const { data: dashboardData, isLoading: isWidgetLoading } =
     useGetDashboardMetrics();
   const {
@@ -41,6 +54,10 @@ export default function DashboardDefault() {
     totalCoverageValue,
     totalPremium,
     upcomingRenewals,
+    totalCancelledNonRenewedPolicies,
+    totalClaimsPaid,
+    accountBalance,
+    renewals,
   } = dashboardData?.data ?? {};
 
   const {
@@ -125,11 +142,10 @@ export default function DashboardDefault() {
               <MainCard>
                 <Stack rowGap={4} textAlign={"center"}>
                   <Typography variant="h6">
-                    Communities
-                    <br /> Insured
+                    Account <br /> Balance
                   </Typography>
                   <Typography variant="subtitle2" color="success">
-                    {insuredCommunities ?? 0}
+                    {accountBalance ?? 0}
                   </Typography>
                 </Stack>
               </MainCard>
@@ -140,10 +156,10 @@ export default function DashboardDefault() {
               <MainCard>
                 <Stack rowGap={4} textAlign={"center"}>
                   <Typography variant="h6">
-                    Total Gross <br /> Premiums
+                    Total Claims <br /> Paid
                   </Typography>
                   <Typography variant="subtitle2" color="success">
-                    {totalPremium ?? 0}
+                    {totalClaimsPaid ?? 0}
                   </Typography>
                 </Stack>
               </MainCard>
@@ -155,11 +171,12 @@ export default function DashboardDefault() {
               <MainCard>
                 <Stack rowGap={4} textAlign={"center"}>
                   <Typography variant="h6">
-                    Maintenance
-                    <br /> Pending
+                    Total  Cancelled
+                    <br />
+                    Policiies
                   </Typography>
                   <Typography variant="subtitle2" color="success">
-                    {totalCoverageValue ?? 0}
+                    {totalCancelledNonRenewedPolicies ?? 0}
                   </Typography>
                 </Stack>
               </MainCard>
@@ -172,7 +189,7 @@ export default function DashboardDefault() {
 
           <MainCard title={"Upcoming Renewals"}>
             <AppGrid size={{ xs: 12 }} justifyItems={"center"}>
-              <RenewalPieChart chartData={upcomingRenewals ?? []} />
+              <RenewalPieChart chartData={upcomingRenewals ?? renewalChartData} />
             </AppGrid>
           </MainCard>
         </AppSkeletonWrapper>
@@ -182,7 +199,7 @@ export default function DashboardDefault() {
         <MainCard
           noStyles={true}
           title={"Community Users"}
-          count={data?.data?.totalSize ?? data?.data?.length}
+          count={0}
         >
           <VerunaCommunitiesTable
             communityList={[
@@ -194,7 +211,7 @@ export default function DashboardDefault() {
                 "communityId": "001bn00001CjNNdAAN",
                 "name": "Fifteen Hundred Medical Office Condominium Association, Inc."
               }]}
-            isLoading={isLoading}
+            isLoading={false}
           />
         </MainCard>
       </AppModal>

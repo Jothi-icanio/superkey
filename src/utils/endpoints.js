@@ -31,7 +31,8 @@ const DASHBOARD = {
   getCompletedTask: "api/tasks/history",
   getActiveAndCompletedTaskByFilter: (sort, orderBy) =>
     `/api/tasks/filters?sort=${sort}&orderBy=${orderBy}`,
-  getDashboardMetrics: `/api/dashboard/metrics`,
+  getDashboardMetrics: `/api/dashboard/metrics/001bn00001CitW2AAJ
+  `,
 };
 
 export { COMMON, COMMUNITY, DASHBOARD, LOGIN };

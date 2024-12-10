@@ -186,7 +186,7 @@ const TaskTable = ({ tableData, loading }) => {
                   })}
                 </>
               ) : (
-                <NoDataMessage />
+                <NoDataMessage title="No Task Found" />
               )}
             </>
           ) : (
