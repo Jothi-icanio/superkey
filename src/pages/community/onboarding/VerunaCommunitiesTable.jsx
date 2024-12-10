@@ -176,12 +176,12 @@ export default function VerunaCommunityTable({
             headerName: "Community Name",
             // flex: 1,
         },
-        {
-            field: "estimatedAgentCommission",
-            headerName: "Estimated Agent Commission",
-            align: "center",
+        // {
+        //     field: "estimatedAgentCommission",
+        //     headerName: "Estimated Agent Commission",
+        //     align: "center",
 
-        },
+        // },
         {
             field: `type`,
             headerName: "Type",
