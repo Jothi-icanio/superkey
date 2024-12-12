@@ -1,206 +1,213 @@
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import MessageIcon from "assets/images/dashboard/MessageIcon";
-import Dot from "components/@extended/Dot";
-import AppSkeleton from "components/AppComponents/AppSkeleton";
-import NoDataMessage from "components/NoDataMessage";
-import { StyledDashboardCard } from "components/StyledComponents";
+import React, { useState } from 'react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  IconButton,
+  Autocomplete,
+  Typography,
+  Box,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import RichTextEditor from 'react-rte';
+import RichTextEditorM from './RichTextEditor';
 
-const getStatus = (status) => {
-  let color;
-  switch (status) {
-    case "COMPLETED":
-      color = "success";
-      break;
-    case "PENDING":
-      color = "error";
-      break;
-    default:
-      color = "grey";
-  }
+const EmailModal = () => {
+  const [open, setOpen] = useState(false);
+  const [recipients, setRecipients] = useState([]);
+  const [subject, setSubject] = useState('');
+  const [body, setBody] = useState(RichTextEditor.createEmptyValue());
+  const [inputEmail, setInputEmail] = useState('');
 
-  return color;
-};
+  // Email validation regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export const ColorRow = ({
-  bgcolor,
-  title,
-  data,
-  dark,
-  main,
-  borderRadius = "15px",
-  status = "",
-  property = "",
-}) => {
-  const theme = useTheme();
+  // Predefined email options
+  const emailOptions = [
+    'richard@gmail.com',
+    'allwin@gmail.com',
+    'jasondeninsonpaul@gmail.com',
+    'example1@gmail.com',
+    'example2@gmail.com',
+  ];
+
+  // Open/Close Modal
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => {
+    setOpen(false);
+    setRecipients([]);
+    setSubject('');
+    setBody(RichTextEditor.createEmptyValue());
+    setInputEmail('');
+  };
+
+  // Add a manually entered email
+  const handleAddEmail = (event) => {
+    if (event.key === 'Enter' && inputEmail.trim()) {
+      event.preventDefault();
+      if (emailRegex.test(inputEmail)) {
+        setRecipients([...recipients, inputEmail]);
+        setInputEmail('');
+      } else {
+        alert('Invalid email address');
+      }
+    }
+  };
+
+  // Send Email
+  const handleSend = () => {
+    const htmlBody = body.toString('html');
+    console.log('Email Sent:', { recipients, subject, htmlBody });
+    handleClose();
+  };
+
   return (
-    <StyledDashboardCard>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: theme.palette.primary.lighter,
-        }}
-      >
-        {title && (
-          <>
-            <Typography sx={{ flexBasis: "5%" }}>
-              <CheckCircleIcon />
+    <div>
+      {/* Button to Open Modal */}
+      <Button variant="contained" color="primary" onClick={handleOpen}>
+        Open Email Modal
+      </Button>
+
+      {/* Email Modal */}
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+        <DialogTitle>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+            Send Email
+          </Typography>
+          <IconButton
+            edge="end"
+            color="inherit"
+            onClick={handleClose}
+            aria-label="close"
+            sx={{ position: 'absolute', right: 8, top: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent dividers>
+          {/* "To" Field with Autocomplete */}
+          <Box sx={{ marginBottom: "2rem",     borderRadius: '0.8rem',
+        background: '#F8F8F8',
+        padding: '0.3rem',
+        display: 'flex',
+        alignItems: 'center', }}>
+            <Typography       sx={{
+        fontWeight: 500,
+        fontSize: '18px',
+        lineHeight: '28px',
+        color: '#323C4D',
+      }} >
+              To:
             </Typography>
-
-            <Box
-              sx={{
-                flexBasis: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                bgcolor,
-                color: dark ? "grey.800" : theme.palette.background.default,
-                border: main ? "1px dashed" : "1px solid transparent",
-                p: 2,
-                borderRadius,
-              }}
-            >
-              <Typography
-                variant="h6"
-                color={theme.palette.text.primary}
-                sx={{ flexBasis: "75%" }}
-              >
-                {title}
-              </Typography>
-
-              <Box
-                variant="h3"
-                color={theme.palette.text.primary}
-                sx={{ flexBasis: "15%", textAlign: "center" }}
-              >
-                <Dot color={status} />
-              </Box>
-
-              <Typography
-                variant="subtitle1"
-                color={theme.palette.text.primary}
-                sx={{ flexBasis: "21%", textAlign: "center" }}
-              >
-                -
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                flexBasis: "10%",
-                display: "flex",
-                gap: 2,
-                pl: 2,
-                alignItems: "center",
-              }}
-            >
-              <Button size="small" variant="outlined">
-                View
-              </Button>
-
-              <Button>
-                <MessageIcon />
-              </Button>
-            </Box>
-          </>
-        )}
-      </Box>
-    </StyledDashboardCard>
-  );
-};
-const TableHeader = () => {
-  const theme = useTheme();
-  return (
-    <Box
+            <Autocomplete
+  multiple
+  freeSolo
+  limitTags={3}
+  options={emailOptions}
+  value={recipients}
+  onChange={(event, newValue) => setRecipients(newValue)}
+  sx={{
+    width: '100%',
+    marginLeft: '1rem',
+    
+  }}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      variant="standard"
+      placeholder="Add more Recipient"
+      onKeyDown={handleAddEmail}
+      value={inputEmail}
+      onChange={(e) => setInputEmail(e.target.value)}
       sx={{
-        display: "flex",
-        alignItems: "center",
-        borderRadius: "15px",
-        p: "0.5rem 1rem",
-        fontWeight: "bold",
+        '& .MuiInput-root::before': {
+          border: 'none',
+        },
+        '& .MuiInput-root::after': {
+          border: 'none',
+        },
+        '& .MuiInput-root:hover:not(.Mui-disabled, .Mui-error):before': {
+          border: 'none',
+        },
       }}
-    >
-      <Typography sx={{ flexBasis: "5%" }}></Typography>
-      <Typography
-        variant="subtitle1"
-        color={theme.palette.text.primary}
-        sx={{ flexBasis: "85%", textAlign: "left" }}
-      ></Typography>
+    />
+  )}
+/>
 
-      <Typography
-        variant="h6"
-        color={theme.palette.text.primary}
-        sx={{ flexBasis: "20%", textAlign: "center" }}
-      >
-        Status
-      </Typography>
+          </Box>
+<Box>
+<Typography         sx={{
+        fontWeight: 600,
+        fontSize: '16px',
+        lineHeight: '19.36px',
+        letterSpacing: '5%',
+        color: '#5B738B',
+      }}>
+              Subject
+            </Typography>
+          {/* Subject Field */}
+          <TextField
+            fullWidth
+            placeholder="Enter Subject"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            variant="standard"
+            margin="dense"
+            sx={{
+              marginBottom:"2rem",
+              background:"#F8F8F8",
+              padding: '0.3rem',
+        '& .MuiInput-root::before': {
+          border: 'none',
+        },
+        '& .MuiInput-root::after': {
+          border: 'none',
+        },
+        '& .MuiInput-root:hover:not(.Mui-disabled, .Mui-error):before': {
+          border: 'none',
+        },
+      }}
+          />
+          </Box>
 
-      <Typography
-        variant="h6"
-        color={theme.palette.text.primary}
-        sx={{ flexBasis: "20%", textAlign: "center" }}
-      >
-        Property
-      </Typography>
-      <Box sx={{ flexBasis: "11%" }} />
-      <Typography
-        variant="h6"
-        color={theme.palette.text.primary}
-        sx={{ flexBasis: "10%", textAlign: "center" }}
-      >
-        Action
-      </Typography>
-      <Box sx={{ flexBasis: "3%" }} />
-    </Box>
-  );
-};
-const TaskTable = ({ tableData, loading }) => {
-  return (
-    <Stack sx={{ mt: 1 }}>
-      <TableHeader />
-      <Box sx={{ overflow: "auto", height: "15rem", p: 2 }}>
-        <Stack rowGap={1.5}>
-          {!loading ? (
-            <>
-              {tableData?.length > 0 ? (
-                <>
-                  {tableData?.map((row, index) => {
-                    const status = getStatus(row?.status);
-                    return (
-                      <ColorRow
-                        key={row?.index}
-                        title={row?.description}
-                        status={status}
-                        property={row?.property}
-                        bgcolor={
-                          row?.status === "COMPLETED"
-                            ? "grey.300"
-                            : `error.lighter`
-                        }
-                        borderRadius={"15px"}
-                      />
-                    );
-                  })}
-                </>
-              ) : (
-                <NoDataMessage title="No Task Found" />
-              )}
-            </>
-          ) : (
-            <AppSkeleton
-              row={3}
-              variant={"custom"}
-              width={"100%"}
-              height={"60px"}
-            />
-          )}
-        </Stack>
-      </Box>
-    </Stack>
+          {/* Rich Text Editor for Body */}
+          
+          {/* <RichTextEditor
+            value={body}
+            onChange={setBody}
+            // toolbarConfig={{
+            //   display: ['INLINE_STYLE_BUTTONS', 'BLOCK_TYPE_BUTTONS', 'LINK_BUTTONS', 'HISTORY_BUTTONS'],
+            //   INLINE_STYLE_BUTTONS: [
+            //     { label: 'Bold', style: 'BOLD' },
+            //     { label: 'Italic', style: 'ITALIC' },
+            //     { label: 'Underline', style: 'UNDERLINE' },
+            //   ],
+            //   BLOCK_TYPE_DROPDOWN: [
+            //     { label: 'Normal', style: 'unstyled' },
+            //     { label: 'Heading 1', style: 'header-one' },
+            //     { label: 'Heading 2', style: 'header-two' },
+            //     { label: 'Heading 3', style: 'header-three' },
+            //   ],
+            // }}
+          /> */}
+          <RichTextEditorM/>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleSend} variant="contained" color="primary">
+            Send
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 };
 
-export default TaskTable;
+export default EmailModal;

@@ -1,0 +1,16 @@
+.ql-toolbar.ql-snow {
+    background: #F2F2F2;
+    box-sizing: border-box;
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    padding: 8px;
+    border: none !important;
+    border-radius: 0.3rem;
+}
+
+.ql-container.ql-snow {
+    border: none !important;
+}
+
+.ql-editor {
+    font-family: 'Arial', 'Courier New', 'Georgia', 'Times New Roman', 'Verdana', 'Tahoma', sans-serif;
+  }
