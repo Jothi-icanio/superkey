@@ -8,7 +8,6 @@ import AppRowBox from "components/AppComponents/AppRowBox";
 import CircularLoader from "components/CircularLoader";
 import { useFormik } from "formik";
 import { useOnboardCommunity } from "hooks/useCommunity";
-import { RadiusStyledButton } from "pages/dashboard/StyledComponent";
 import React, { Suspense, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import * as Yup from "yup";
@@ -67,7 +66,7 @@ const onBoardingStepper = [
     height: "60vh",
   },
   {
-    title: "Insurance Documentation",
+    title: "Insurance Documents",
     component: InsuranceUpload,
     height: "auto",
     width: "60%",
@@ -196,20 +195,22 @@ const OnboardingIndex = ({ refetch }) => {
             <div></div>
           )}
         </AppGrid>
-        <AppGrid item size={{ xs: 2 }}>
-          <Button
-            fullWidth
-            color="info"
-            type="submit"
-            onClick={() => handleSubmit()}
-            variant="contained"
-            disabled={
-              activeStep === 4 && show == "true" && selectedFiles.length == 0
-            }
-          >
-            {finalStep ? "Save" : "Next"}
-          </Button>
-        </AppGrid>
+
+        {(activeStep < 4 ||
+          (activeStep === 4 &&
+            !(show === "true" && selectedFiles.length === 0))) && (
+          <AppGrid item size={{ xs: 2 }}>
+            <Button
+              fullWidth
+              color="info"
+              type="submit"
+              onClick={() => handleSubmit()}
+              variant="contained"
+            >
+              {finalStep ? "Save" : "Next"}
+            </Button>
+          </AppGrid>
+        )}
       </AppRowBox>
     );
   };
@@ -233,7 +234,7 @@ const OnboardingIndex = ({ refetch }) => {
           communityManagerId: values?.communityManager?.managerId,
           companyId: values?.communityManager?.managementCompanyId,
           documents: transformDocuments(selectedFiles),
-          status: "ACTIVE"
+          status: "ACTIVE",
         };
         formData.append("community", JSON.stringify(payload));
         selectedFiles.forEach((item) => formData.append("file", item.file));
@@ -292,7 +293,6 @@ const OnboardingIndex = ({ refetch }) => {
         align={finalStep ? "center" : ""}
         width={onBoardingStepper[activeStep]?.width || undefined}
       >
-
         <div
           style={{ pointerEvents: communityCreationLoading ? "none" : "auto" }}
         >
@@ -316,7 +316,7 @@ const OnboardingIndex = ({ refetch }) => {
         </div>
         <Backdrop
           sx={{
-            color: '#fff',
+            color: "#fff",
             zIndex: (theme) => theme.zIndex.drawer + 1,
           }}
           open={communityCreationLoading}
