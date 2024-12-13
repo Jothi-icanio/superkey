@@ -242,11 +242,11 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
   const handleModal = () => {
     setModal(false);
   };
-  const handleModalDiscard=()=>{
+  const handleModalDiscard = () => {
     const data = communityInfo?.data;
     updateCommunityFields(data);
     setModal(false);
-  }
+  };
   const handleOffBoard = () => {
     const payload = {
       mappings: [
@@ -319,10 +319,10 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
               ? "Do you want to off-board the community?"
               : "Are you sure you want to discard the changes?"
           }
-          confirmLabel={offBoard ? "Yes" : "No"}
-          cancelLabel={offBoard ? "No" : "Yes, Discard"}
-          onConfirm={offBoard ? handleModalDiscard : handleModal}
-          onCancel={handleModalDiscard}
+          confirmLabel={offBoard ? "Yes" : "Yes,Discard"}
+          cancelLabel={"No"}
+          onConfirm={offBoard ? handleModal : handleModalDiscard}
+          onCancel={handleModal}
         />
       </>
     );
@@ -331,7 +331,11 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
     setEnableEdit(true);
   };
   return (
-    <AppCard title={communityInfo?.data?.name||"Company Name"} footer={<Footer />} onClose={onClose}>
+    <AppCard
+      title={communityInfo?.data?.name || "Company Name"}
+      footer={<Footer />}
+      onClose={onClose}
+    >
       <AppGrid container size={{ xs: 12 }} rowSpacing={4}>
         <AppGrid
           item
