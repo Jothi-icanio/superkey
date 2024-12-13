@@ -411,6 +411,11 @@ const InsuranceUpload = ({
           setSelected={setSelected}
         />
       )}
+      {selectedFiles.length > 0 && (
+        <Box p={4}>
+          <PreviewButton index={0} onPreview={onClickPreview} previewAll />
+        </Box>
+      )}
     </Grid>
   );
 };

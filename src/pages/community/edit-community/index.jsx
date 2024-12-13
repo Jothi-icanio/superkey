@@ -6,6 +6,7 @@ import ConfirmationModal from "components/AppComponents/AppConfirmationModal";
 import AppGrid from "components/AppComponents/AppGrid";
 import AppLabelComponent from "components/AppComponents/AppLabelComponent";
 import AppRowBox from "components/AppComponents/AppRowBox";
+import { RadiusStyledButton } from "components/StyledComponents";
 import { useFormik } from "formik";
 import {
   useDeleteCommunityById,
@@ -16,14 +17,13 @@ import {
   useCommunityManagersQuery,
   usePropertyManagersQuery,
 } from "hooks/useDropDown";
-import { RadiusStyledButton } from "pages/dashboard/StyledComponent";
 
 import { useEffect, useState } from "react";
 
 import { countryPhoneCodes, insuranceOptions } from "utils/constants";
 import { useDebounceFn } from "utils/helpers";
 import * as Yup from "yup";
-import { getContactInfo } from "../onboarding/utils";
+import { getContactInfo, removeExtraSpaces } from "../onboarding/utils";
 const defaultCountryCode = { label: "+1", value: "+1" };
 
 const initialValues = {
@@ -35,14 +35,14 @@ const initialValues = {
   },
   communityManager: {
     username: "",
-    code: '+1',
+    code: "+1",
     phone: "",
 
     email: "",
   },
   propertyManager: {
     username: "",
-    code: '+1',
+    code: "+1",
     phone: "",
 
     email: "",
@@ -90,15 +90,14 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
     communityManager: "",
     propertyManager: "",
   });
-  const [communityDetails, setCommunityDetails] = useState({})
+  const [communityDetails, setCommunityDetails] = useState({});
   const successHandler = () => {
     refetch();
     onClose();
   };
-  const {
-    data: communityInfo,
-
-  } = useGetCommunityById(communityData?.communityId);
+  const { data: communityInfo } = useGetCommunityById(
+    communityData?.communityId
+  );
   const { mutate: updateCommunity, isLoading: isUpdating } =
     useUpdateCommunityById(successHandler);
   const { mutate: deleteUserById } = useDeleteCommunityById();
@@ -114,7 +113,7 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
     initialValues: initialValues,
     validationSchema: Yup.object().shape(initialValidationSchema),
     onSubmit: (values) => {
-      let contactInfo = getContactInfo(values?.addressDetails)
+      let contactInfo = getContactInfo(values?.addressDetails);
       const payload = {
         communityId: communityData?.communityId,
         name: values?.addressDetails?.communityName,
@@ -124,7 +123,7 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
         propertyManagerId: values?.propertyManager?.userId,
         insuredCoverage: values?.insuranceDetails?.insuredCoverage,
         premiumAmount: values?.insuranceDetails?.premiumAmount.name,
-        status: "ACTIVE"
+        status: "ACTIVE",
       };
 
       updateCommunity({ id: communityData?.communityId, body: payload });
@@ -138,13 +137,19 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
     setFieldValue,
     setValues,
     handleSubmit,
+    setTouched,
+    setErrors,
+    handleChange,
   } = formik;
   const onReset = () => {
     setModal(true);
     setOffBoard(true);
   };
-
-  const handleChange = (event) => {
+  const handleBlur = (event) => {
+    const { name, value } = event.target;
+    setFieldValue(name, value);
+  };
+  const onChange = (event) => {
     const { name, value } = event.target;
 
     const [id, key] = name.split(".");
@@ -202,12 +207,8 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
       ...prevValues,
       addressDetails: {
         communityName: data?.name || "",
-        city: data?.contactInfo
-          ? data?.contactInfo.split(",")[1]?.trim()
-          : "",
-        state: data?.contactInfo
-          ? data?.contactInfo.split(",")[0]?.trim()
-          : "",
+        city: data?.contactInfo ? data?.contactInfo.split(",")[1]?.trim() : "",
+        state: data?.contactInfo ? data?.contactInfo.split(",")[0]?.trim() : "",
         zipcode: data?.contactInfo
           ? data?.contactInfo.split(",")[2]?.trim()
           : "",
@@ -224,14 +225,16 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
         userId: data?.propertyManager?.managerId,
         email: data?.propertyManager?.email,
         phone: data?.propertyManager?.phone,
-        code: data?.propertyManager?.region ?? '+1',
+        code: data?.propertyManager?.region ?? "+1",
       },
       insuranceDetails: {
-        premiumAmount: data?.premiumAmount ? { id: data?.premiumAmount, name: data?.premiumAmount?.toString() } : "",
+        premiumAmount: data?.premiumAmount
+          ? { id: data?.premiumAmount, name: data?.premiumAmount?.toString() }
+          : "",
         insuredCoverage: data?.insuredCoverage || 10000000,
       },
     }));
-  }
+  };
   const onDiscard = () => {
     setOffBoard(false);
     setModal(true);
@@ -239,6 +242,11 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
   const handleModal = () => {
     setModal(false);
   };
+  const handleModalDiscard=()=>{
+    const data = communityInfo?.data;
+    updateCommunityFields(data);
+    setModal(false);
+  }
   const handleOffBoard = () => {
     const payload = {
       mappings: [
@@ -257,7 +265,7 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
   const Footer = () => {
     return (
       <>
-        <AppRowBox >
+        <AppRowBox>
           <AppGrid item size={{ xs: 6, sx: 6, lg: 8 }}>
             <RadiusStyledButton
               color="#FFFFFF"
@@ -265,7 +273,7 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
               // width="30%"
               height="50px"
               borderRadius="10px"
-              onClick={onReset}
+              // onClick={onReset}
               sx={{
                 border: "0.5px solid #E12929",
               }}
@@ -313,8 +321,8 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
           }
           confirmLabel={offBoard ? "Yes" : "No"}
           cancelLabel={offBoard ? "No" : "Yes, Discard"}
-          onConfirm={offBoard ? handleOffBoard : handleModal}
-          onCancel={handleModal}
+          onConfirm={offBoard ? handleModalDiscard : handleModal}
+          onCancel={handleModalDiscard}
         />
       </>
     );
@@ -323,12 +331,15 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
     setEnableEdit(true);
   };
   return (
-    <AppCard title={"Desert Springs"} footer={<Footer />} onClose={onClose}>
+    <AppCard title={communityInfo?.data?.name||"Company Name"} footer={<Footer />} onClose={onClose}>
       <AppGrid container size={{ xs: 12 }} rowSpacing={4}>
-        <AppGrid item size={{ xs: 12 }} container justifyContent={'space-between'}>
-          <Typography variant="h3">
-            {"Address Details"}
-          </Typography>
+        <AppGrid
+          item
+          size={{ xs: 12 }}
+          container
+          justifyContent={"space-between"}
+        >
+          <Typography variant="h3">{"Address Details"}</Typography>
 
           <RadiusStyledButton
             onClick={handleEdit}
@@ -353,7 +364,7 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
               variant="body2"
             >
               <TextField
-                value={values?.addressDetails?.communityName}
+                value={removeExtraSpaces(values?.addressDetails?.communityName)}
                 placeholder="Eg : Desert Springs"
                 fullWidth
                 onChange={handleChange}
@@ -373,7 +384,7 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
           <AppGrid item size={size}>
             <AppLabelComponent label="City" color={"secondary"} variant="body2">
               <TextField
-                value={values?.addressDetails?.city}
+                value={removeExtraSpaces(values?.addressDetails?.city)}
                 fullWidth
                 placeholder="Eg : Flushing"
                 onChange={handleChange}
@@ -395,7 +406,7 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
               variant="body2"
             >
               <TextField
-                value={values?.addressDetails?.state}
+                value={removeExtraSpaces(values?.addressDetails?.state)}
                 fullWidth
                 onChange={handleChange}
                 name="addressDetails.state"
@@ -417,7 +428,7 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
               variant="body2"
             >
               <TextField
-                value={values?.addressDetails?.zipcode}
+                value={removeExtraSpaces(values?.addressDetails?.zipcode)}
                 fullWidth
                 onChange={handleChange}
                 name="addressDetails.zipcode"
@@ -425,7 +436,7 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
                 disabled={!enableEdit}
                 error={Boolean(
                   touched.addressDetails?.zipcode &&
-                  errors.addressDetails?.zipcode
+                    errors.addressDetails?.zipcode
                 )}
                 helperText={
                   touched.addressDetails?.zipcode &&
@@ -435,17 +446,19 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
             </AppLabelComponent>
           </AppGrid>
         </AppGrid>
-        <AppGrid
-          container
-          size={{ xs: 12 }}
-          spacing={1}
-        >
+        <AppGrid container size={{ xs: 12 }} spacing={1}>
           <AppGrid item size={{ xs: 12 }}>
             <Typography variant="h3" sx={{ mb: 2 }}>
               {"Community Manager"}
             </Typography>
           </AppGrid>
-          <AppGrid item container size={{ xs: 12 }} columnSpacing={4} rowSpacing={2}>
+          <AppGrid
+            item
+            container
+            size={{ xs: 12 }}
+            columnSpacing={4}
+            rowSpacing={2}
+          >
             <AppGrid item size={size}>
               <AppLabelComponent label={"Name"}>
                 <AppAutoComplete
@@ -476,11 +489,11 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
                   fullWidth
                   onChange={handleChange}
                   name="communityManager.email"
-                  placeholder="communitymanager@gmail.com"
+                  placeholder="CommunityManager@gmail.com"
                   disabled={!enableEdit}
                   error={Boolean(
                     touched.communityManager?.email &&
-                    errors.communityManager?.email
+                      errors.communityManager?.email
                   )}
                   helperText={
                     touched.communityManager?.email &&
@@ -501,8 +514,8 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
                       touched.communityManager?.code &&
                       errors.communityManager?.code
                     }
-                    // onChange={handleChange}
-                    // onBlur={handleBlur}
+                    onChange={onChange}
+                    onBlur={handleBlur}
                     disableClearable
                     nameParam="label"
                     searchKey="communityManager"
@@ -516,7 +529,6 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
                 <AppLabelComponent label={"Mobile Number"}>
                   <TextField
                     inputProps={{ readOnly: true }}
-
                     value={values?.communityManager?.phone}
                     fullWidth
                     onChange={handleChange}
@@ -525,7 +537,7 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
                     disabled={!enableEdit}
                     error={Boolean(
                       touched.communityManager?.phone &&
-                      errors.communityManager?.phone
+                        errors.communityManager?.phone
                     )}
                     helperText={
                       touched.communityManager?.phone &&
@@ -541,12 +553,15 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
 
         <AppGrid item container size={{ xs: 12 }} rowSpacing={3}>
           <AppGrid item size={{ xs: 12 }}>
-
-            <Typography variant="h3" >
-              {"Property Manager"}
-            </Typography>
+            <Typography variant="h3">{"Property Manager"}</Typography>
           </AppGrid>
-          <AppGrid item size={{ xs: 12 }} container columnSpacing={4} rowSpacing={2}>
+          <AppGrid
+            item
+            size={{ xs: 12 }}
+            container
+            columnSpacing={4}
+            rowSpacing={2}
+          >
             <AppGrid item size={size}>
               <AppLabelComponent label={"Name"}>
                 <AppAutoComplete
@@ -573,16 +588,15 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
               <AppLabelComponent label={"Email"}>
                 <TextField
                   inputProps={{ readOnly: true }}
-
                   value={values?.propertyManager?.email}
                   fullWidth
                   onChange={handleChange}
                   name="propertyManager.email"
-                  placeholder="propertymanager@gmail.com"
+                  placeholder="PropertyManager@gmail.com"
                   disabled={!enableEdit}
                   error={Boolean(
                     touched.propertyManager?.email &&
-                    errors.propertyManager?.email
+                      errors.propertyManager?.email
                   )}
                   helperText={
                     touched.propertyManager?.email &&
@@ -603,8 +617,8 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
                       touched.propertyManager?.code &&
                       errors.propertyManager?.code
                     }
-                    // onChange={handleChange}
-                    // onBlur={handleBlur}
+                    onChange={onChange}
+                    onBlur={handleBlur}
                     nameParam="label"
                     disableClearable
                     searchKey="propertyManager"
@@ -618,7 +632,6 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
                 <AppLabelComponent label={"Mobile Number"}>
                   <TextField
                     inputProps={{ readOnly: true }}
-
                     value={values?.propertyManager?.phone}
                     fullWidth
                     onChange={handleChange}
@@ -627,7 +640,7 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
                     disabled={!enableEdit}
                     error={Boolean(
                       touched.propertyManager?.phone &&
-                      errors.propertyManager?.phone
+                        errors.propertyManager?.phone
                     )}
                     helperText={
                       touched.propertyManager?.phone &&
@@ -640,19 +653,19 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
           </AppGrid>
         </AppGrid>
         {/* Insurance Details */}
-        <AppGrid
-          item
-          container
-          size={{ xs: 12 }}
-          spacing={1}
-        >
+        <AppGrid item container size={{ xs: 12 }} spacing={1}>
           <AppGrid item size={{ xs: 12 }}>
-
             <Typography variant="h3" sx={{ mb: 2 }}>
               {"Insurance Details"}
             </Typography>
           </AppGrid>
-          <AppGrid item size={{ xs: 12 }} container columnSpacing={4} rowSpacing={2}>
+          <AppGrid
+            item
+            size={{ xs: 12 }}
+            container
+            columnSpacing={4}
+            rowSpacing={2}
+          >
             <AppGrid item size={size}>
               <AppLabelComponent
                 label="Insurance Premium"
@@ -667,10 +680,9 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
                     touched.insuranceDetails?.premiumAmount &&
                     errors.insuranceDetails?.premiumAmount
                   }
-                  onChange={handleChange}
-                  // onBlur={handleBlur}
+                  onChange={onChange}
+                  onBlur={handleBlur}
                   nameParam="name"
-
                   value={values?.insuranceDetails?.premiumAmount || null}
                   options={insuranceOptions}
                   placeholder="Select Insurance Value"
@@ -692,7 +704,7 @@ const EditCommunity = ({ onClose, communityData, refetch }) => {
                   disabled={!enableEdit}
                   error={Boolean(
                     touched.insuranceDetails?.insuredCoverage &&
-                    errors.insuranceDetails?.insuredCoverage
+                      errors.insuranceDetails?.insuredCoverage
                   )}
                   helperText={
                     touched.insuranceDetails?.insuredCoverage &&

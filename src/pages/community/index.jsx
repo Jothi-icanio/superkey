@@ -2,8 +2,8 @@ import { Drawer } from "@mui/material";
 
 import AppGrid from "components/AppComponents/AppGrid";
 import { useCommunityList, useDeleteCommunityById } from "hooks/useCommunity";
-import CommunityTable from "pages/dashboard/CommunityTable";
-import { RadiusStyledButton } from "pages/dashboard/StyledComponent";
+import CommunityTable from "pages/community/CommunityTable";
+import { RadiusStyledButton } from "components/StyledComponents";
 import { useEffect, useState } from "react";
 import { useDebounceFn } from "utils/helpers";
 import EditCommunity from "./edit-community";
@@ -58,17 +58,21 @@ const CommunityOnboarding = () => {
         },
       ],
     };
-    deleteUserById({ id: communityData?.communityId, body: payload });
+    // deleteUserById({ id: communityData?.communityId, body: payload });
   };
 
   const handleSelectionChange = (selected) => {
     setSelectedRows(selected);
   };
 
-  const handleChangeRadio = (e) => {
-    const { value } = e.target;
-    setFilters({ ...filters, sort: value });
-    fetchData(value, filters.search, 1);
+  const handleChangeRadio = (value) => {
+    let newValue = filters.sort == value ? null : value
+    setFilters((prev) => ({
+      ...prev,
+      sort: newValue,
+    }));
+
+    fetchData(newValue, filters.search, 1);
     setPage(1)
   };
 
@@ -139,7 +143,7 @@ const CommunityOnboarding = () => {
               width="227px"
               height="50px"
               borderRadius="10px"
-              onClick={handleOffBoard}
+              // onClick={handleOffBoard}
               sx={{
                 border: "0.5px solid #E12929",
               }}
