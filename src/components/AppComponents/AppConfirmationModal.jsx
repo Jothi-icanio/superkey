@@ -16,9 +16,9 @@ const ConfirmationModal = ({
   align = "center",
 }) => {
   return (
-    <AppModal width="37vw" open={open} onClose={onClose} height={height} align={align}>
+    <AppModal width="auto" open={open} onClose={onClose} height={height} align={align}>
       <Card sx={{ boxShadow: "none" }}>
-        <CardHeader title={<Typography variant="h4">{message}</Typography>} />
+        <CardHeader title={<Typography variant="h4">{message}</Typography>} sx={{p:'inherit'}}/>
         <CardContent>
           <AppRowBox justifyContent="center" >
             <RadiusStyledButton
