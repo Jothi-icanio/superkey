@@ -256,7 +256,8 @@ const EditCommunity = ({ onClose, communityData, refetch, cmcId }) => {
         },
       ],
     };
-    mutate(payload);
+    const msg = communityData?.name;
+    mutate({payload, msg});
     setModal(false);
     successHandler()
   };

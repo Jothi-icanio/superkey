@@ -71,7 +71,8 @@ const CommunityOnboarding = () => {
     // };
 
     const payload = { mappings: offboardData, };
-    mutate(payload);
+    const msg = payload.mappings.length;
+    mutate({payload,msg});
     setModal(!modal);
     handleSelectionChange([])
     setOffboardData([])

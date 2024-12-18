@@ -239,7 +239,8 @@ export default function CommunityTable({
         },
       ],
     };
-    mutate(payload);
+    const msg = communityInfo?.name;
+    mutate({ payload, msg });
     setModal(!modal);
     setMenuAnchorEl(null)
   };

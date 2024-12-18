@@ -14,6 +14,10 @@ import noData from "assets/images/icons/noData.svg";
 import { BoldTypographyHeader, Image } from "components/StyledComponents";
 import AppPagination from "./AppPagination";
 import AppSkeleton from "./AppSkeleton";
+import { useAuthCookies } from "utils/cookie";
+
+const { getCookie } = useAuthCookies();
+
 const AppTable = ({
   isLoading,
   columns,
@@ -47,10 +51,12 @@ const AppTable = ({
       // Extract the result based on matching communityId and mapping the managerId
       const result = newSelected?.map(communityId => {
         const community = rows.find(item => item.communityId === communityId);
-        if (community && community?.communityManager?.managerId) {
+        console.log(getCookie("cmcId"), "cmcId");
+          console.log(communityId, "communityId");
+        if (community && community?.communityManager?.managerId) {    
           return {
-            cmcId: community?.communityManager?.managerId || "001bn00001CitW2AAJ",
-            communityId: communityId
+            communityId: communityId,
+            cmcId: getCookie("cmcId"),       
           };
         }
         return null;
