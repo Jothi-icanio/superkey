@@ -16,7 +16,7 @@ const ConfirmationModal = ({
   align = "center",
 }) => {
   return (
-    <AppModal width="35vw" open={open} onClose={onClose} height={height} align={align}>
+    <AppModal width="37vw" open={open} onClose={onClose} height={height} align={align}>
       <Card sx={{ boxShadow: "none" }}>
         <CardHeader title={<Typography variant="h4">{message}</Typography>} />
         <CardContent>
