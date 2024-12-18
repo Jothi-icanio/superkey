@@ -11,7 +11,7 @@ import { useFormik } from "formik";
 import {
   useGetCommunityById,
   useOffBoardCommunity,
-  useUpdateCommunityById
+  useUpdateCommunityById,
 } from "hooks/useCommunity";
 import {
   useCommunityManagersQuery,
@@ -99,7 +99,6 @@ const EditCommunity = ({ onClose, communityData, refetch, cmcId }) => {
   );
   const { mutate: updateCommunity, isLoading: isUpdating } =
     useUpdateCommunityById(successHandler);
-
 
   const { data: communityManagerData } = useCommunityManagersQuery(
     seachString.communityManager
@@ -243,7 +242,7 @@ const EditCommunity = ({ onClose, communityData, refetch, cmcId }) => {
     const data = communityInfo?.data;
     updateCommunityFields(data);
     setModal(false);
-  }
+  };
 
   const { mutate } = useOffBoardCommunity();
   const handleOffBoard = () => {
@@ -259,7 +258,7 @@ const EditCommunity = ({ onClose, communityData, refetch, cmcId }) => {
     const msg = communityData?.name;
     mutate({payload, msg});
     setModal(false);
-    successHandler()
+    successHandler();
   };
 
   const countryCodeSize = { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 };

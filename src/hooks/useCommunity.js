@@ -106,18 +106,29 @@ export const useCommunityList = () => {
   });
 };
 
+export const useDownloadOnboardingTemplate = () => {
+  return useMutation({
+    mutationFn: api.community.downloadOnboardingTemplate,
+  });
+};
+
+export const useCreateMultiCommunity = () => {
+  return useMutation({
+    mutationFn: (body) => api.community.createMultiCommunity(body),
+  });
+};
 export const useOffBoardCommunity = () => {
   const { updateSnackbar } = useSnackbar();
 
   const mutation = useMutation({
     mutationKey: ['community-offboarding'],
-    mutationFn: async ({payload, msg}) => {
+    mutationFn: async (payload) => {
       // const { communityId, cmcId } = payload;
       console.log(msg, "str");
       const response = await api.community.offBoardCommunity(payload);
       return response.data;
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       console.log('Community off-boarded successfully:', data);
       updateSnackbar({
         message: typeof variables.msg === 'number' ? `You Have Off-boarded the ${variables.msg} communities successfully !` : `You Have Off-boarded the ${variables.msg} community successfully !`,
@@ -125,8 +136,8 @@ export const useOffBoardCommunity = () => {
       });
     },
     onError: (error) => {
-      const errorMessage = error?.response?.data?.token || 'An error occurred.';
-      console.error('Error off-boarding community:', errorMessage);
+      const errorMessage = error?.response?.data?.token || "An error occurred.";
+      console.error("Error off-boarding community:", errorMessage);
       updateSnackbar({
         message: errorMessage,
         severity: SEVERITY.error,
