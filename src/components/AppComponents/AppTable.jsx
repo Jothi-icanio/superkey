@@ -149,7 +149,7 @@ const AppTable = ({
                       color="success"
                       padding="0px"
                       checked={isSelected}
-                      onClick={() => handleRowClick(row[rowKey], row[`communityManager`][`managerId`])}
+                      onClick={() => handleRowClick(row[rowKey], row?.[`communityManager`]?.[`managerId`])}
                     />
                   </TableCell>)}
                   {columns.map((col, idx) => (
