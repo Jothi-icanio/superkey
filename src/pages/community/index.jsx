@@ -31,7 +31,7 @@ const CommunityOnboarding = () => {
   const { getCookie } = useAuthCookies()
 
   const cmcId = getCookie('cmcId')
-
+  
   const {
     mutate: getCommunityList,
     data: communityListData,
@@ -69,8 +69,12 @@ const CommunityOnboarding = () => {
     //     },
     //   ],
     // };
-
-    const payload = { mappings: offboardData, };
+    const payload = {
+      mappings: selectedRows.map(row => ({
+        communityId: row,
+        cmcId: cmcId,
+      })),
+    };
     const msg = payload.mappings.length;
     mutate({payload,msg});
     setModal(!modal);
