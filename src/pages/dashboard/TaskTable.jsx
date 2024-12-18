@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import RichTextEditor from 'react-rte';
-import RichTextEditorM from './RichTextEditor';
+import RichTextEditorM from '../../components/AppComponents/AppRichTextEditor';
 
 const EmailModal = () => {
   const [open, setOpen] = useState(false);
@@ -173,27 +173,6 @@ const EmailModal = () => {
       }}
           />
           </Box>
-
-          {/* Rich Text Editor for Body */}
-          
-          {/* <RichTextEditor
-            value={body}
-            onChange={setBody}
-            // toolbarConfig={{
-            //   display: ['INLINE_STYLE_BUTTONS', 'BLOCK_TYPE_BUTTONS', 'LINK_BUTTONS', 'HISTORY_BUTTONS'],
-            //   INLINE_STYLE_BUTTONS: [
-            //     { label: 'Bold', style: 'BOLD' },
-            //     { label: 'Italic', style: 'ITALIC' },
-            //     { label: 'Underline', style: 'UNDERLINE' },
-            //   ],
-            //   BLOCK_TYPE_DROPDOWN: [
-            //     { label: 'Normal', style: 'unstyled' },
-            //     { label: 'Heading 1', style: 'header-one' },
-            //     { label: 'Heading 2', style: 'header-two' },
-            //     { label: 'Heading 3', style: 'header-three' },
-            //   ],
-            // }}
-          /> */}
           <RichTextEditorM/>
         </DialogContent>
 
