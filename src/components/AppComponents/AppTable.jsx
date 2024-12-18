@@ -35,6 +35,7 @@ const AppTable = ({
   rowSecondKey = "id",
   selectedData = null,
   offboardData,
+  hasCheckBox=true,
 }) => {
   const rowCount = rows.length;
   const numSelected = selected.length;
@@ -94,39 +95,23 @@ const AppTable = ({
     }
 
     onSelectionChange?.(newSelected);
-    if (selectedData) {
-      let isAlreadySelectedData = offboardData.find(
-        (item) => item.communityId == id
-      );
-      if (isAlreadySelectedData) {
-        const filteredData = offboardData.filter(
-          (item) => item.communityId !== id
-        );
-        selectedData(filteredData);
-        console.log(offboardData, selectedIndex, "$$$ data");
-      } else {
-        let data = {
-          cmcId: secondId,
-          communityId: id,
-        };
-        selectedData([...offboardData, data]);
-      }
-    }
   };
 
   return (
     <TableContainer sx={{ maxHeight: "calc(100vh - 300px)" }}>
       <Table stickyHeader>
         <TableHead>
-          <TableRow>
-            <TableCell padding="checkbox">
+          <TableRow>{
+            hasCheckBox&&(<TableCell padding="checkbox">
               <Checkbox
                 color="success"
                 indeterminate={numSelected > 0 && numSelected < rowCount}
                 checked={rowCount > 0 && numSelected === rowCount}
                 onChange={onSelectAllClick}
               />
-            </TableCell>
+            </TableCell>)
+          }
+            
             {columns.map((col, index) => (
               <TableCell key={col.field} align={index > 1 ? "center" : "left"}>
                 <BoldTypographyHeader>{col.headerName}</BoldTypographyHeader>
@@ -158,6 +143,7 @@ const AppTable = ({
                   aria-checked={isSelected}
                   selected={isSelected}
                 >
+                {hasCheckBox&&(
                   <TableCell padding="checkbox">
                     <Checkbox
                       color="success"
@@ -165,7 +151,7 @@ const AppTable = ({
                       checked={isSelected}
                       onClick={() => handleRowClick(row[rowKey], row[`communityManager`][`managerId`])}
                     />
-                  </TableCell>
+                  </TableCell>)}
                   {columns.map((col, idx) => (
                     <TableCell
                       key={col.field}

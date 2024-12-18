@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import MailIcon from "@mui/icons-material/Mail";
 import {
   Avatar,
@@ -14,13 +13,12 @@ import PhoneIcon from "assets/images/icons/PhoneIcon";
 import avatar1 from "assets/images/users/avatar-1.png";
 import { useState } from "react";
 import AppCard from "./AppCard";
-import AppGrid from "./AppGrid";
 import EmailModal from "./AppEmailModal";
+import AppGrid from "./AppGrid";
 
-const AppTaskCard = ({ roleName, role, type, number, onClose }) => {
+const AppTaskCard = ({ roleName, role, type, number, onClose, handleSendEmail }) => {
   const [isCopied, setIsCopied] = useState(false);
   const [isPhoneCopied, setIsPhoneCopied] = useState(false);
-  const [openEmailModal, setOpenEmailModal]=useState(false)
   const handleCopy = () => {
     const email = "example@example.com";
     navigator.clipboard.writeText(email).then(() => {
@@ -34,10 +32,7 @@ const AppTaskCard = ({ roleName, role, type, number, onClose }) => {
       setIsCopied(false);
     });
   };
-  const handleSendEmail=()=>{
-    setOpenEmailModal(true)
-    onClose()
-  }
+
   const Footer = () => {
     return (
       <>
@@ -78,7 +73,7 @@ const AppTaskCard = ({ roleName, role, type, number, onClose }) => {
     <AppCard
       height={"auto"}
       footer={<Footer />}
-      width="400px"
+      width="600px"
       custom
       onClose={onClose}
     >
@@ -144,7 +139,7 @@ const AppTaskCard = ({ roleName, role, type, number, onClose }) => {
           </Tooltip>
         </AppGrid>
       </AppGrid>
-      <EmailModal open={openEmailModal} setOpen={setOpenEmailModal}/>
+    
     </AppCard>
   );
 };

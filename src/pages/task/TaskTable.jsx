@@ -4,6 +4,7 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { Button, IconButton, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Box } from "@mui/system";
+import EmailModal from "components/AppComponents/AppEmailModal";
 import AppMenu from "components/AppComponents/AppMenu";
 import AppTable from "components/AppComponents/AppTable";
 import AppTableSearch from "components/AppComponents/AppTableSearch";
@@ -11,7 +12,6 @@ import AppTaskCard from "components/AppComponents/AppTaskCard";
 import { getStatus } from "components/AppComponents/CustomField";
 import FilterDrawer from "components/CustomPopup";
 import { communityStyles, StyledMenuItem } from "components/StyledComponents";
-import { useVerunaPriorityQuery, useVerunaUsersQuery } from "hooks/useDropDown";
 import { useRef, useState } from "react";
 const options = [
   { value: "ACTIVE", label: "Status: Active" },
@@ -30,6 +30,10 @@ export default function TaskTable({
   handleChangePage,
   page,
   selectedRows = [],
+  setFilterData,
+  filterColumns,
+  selectedTab,
+  setSelectedTab,
 }) {
   const anchorRef = useRef(null);
   const theme = useTheme();
@@ -37,56 +41,7 @@ export default function TaskTable({
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [modal, setModal] = useState(null);
-  const { data: assigneToData, isLoading: assigneToLoading } =
-    useVerunaUsersQuery();
-  const { data: priorityData } = useVerunaPriorityQuery();
-  // const [selectedPriority, setSelectedpriority] = useState(priorityData);
-  const [selectedPriority, setSelectedPriority] = useState([
-    { name: "High", color: "#E81616", selected: false },
-    { name: "Medium", color: "#EB6C0B", selected: false },
-    { name: "Low", color: "#DEC013", selected: false },
-  ]);
-
-  const [selectedProperty, setSelectedProperties] = useState([
-    { id: 1, data: "Desert Springs", selected: false },
-    { id: 2, data: "Rose Dale", selected: false },
-    { id: 3, data: "Rose Dal", selected: false },
-    { id: 4, data: "Oak Ridge Estates", selected: false },
-    { id: 5, data: "Mountain Vista", selected: false },
-  ]);
-  // const toggleFilter = (id, PriorityName) => {
-  //   setSelectedProperties((prev) =>
-  //     prev.map((filter) =>
-  //       filter.id === id ? { ...filter, selected: !filter.selected } : filter
-  //     )
-  //   );
-  //   setSelectedPriority((prev) =>
-  //     prev.map((filter) =>
-  //       filter.name === PriorityName ? { ...filter } : filter
-  //     )
-  //   );
-  // };
-  const toggleFilter = (idOrName) => {
-    if (selectedTab === "Properties") {
-      // Update `selectedProperty`
-      setSelectedProperties((prev) =>
-        prev.map((filter) =>
-          filter.id === idOrName
-            ? { ...filter, selected: !filter.selected }
-            : filter
-        )
-      );
-    } else if (selectedTab === "Priority") {
-      // Update `selectedPriority`
-      setSelectedPriority((prev) =>
-        prev.map((priority) =>
-          priority.name === idOrName
-            ? { ...priority, selected: !priority.selected }
-            : priority
-        )
-      );
-    }
-  };
+  const [openEmailModal, setOpenEmailModal] = useState(false);
 
   const pageSize = 10;
 
@@ -110,9 +65,12 @@ export default function TaskTable({
       flex: 1,
     },
     {
-      field: "assignee.name",
+      field: "assignee",
       headerName: "Assigned to",
       flex: 1,
+      renderCell: (row) => {
+        return <Typography>{row?.assignee?.name}</Typography>;
+      },
     },
     {
       field: "dueDate",
@@ -140,7 +98,7 @@ export default function TaskTable({
               gap={0.5}
             >
               {/* <FiberManualRecordIcon fontSize="12px" /> */}
-              {row?.status === "ACTIVE" ? "Active" : "Inactive"}
+              {row?.status}
             </Typography>
           );
         } else {
@@ -218,10 +176,17 @@ export default function TaskTable({
   const renderPriorityComponent = (e) => {
     return (
       <>
-        <StyledMenuItem onClick={() => console.log("task")}>
+        <StyledMenuItem
+          onClick={(e) => {
+            setModal(e.currentTarget);
+            setMenuAnchorEl(null);
+          }}
+          ref={anchorRef}
+        >
           View details
         </StyledMenuItem>
-        <StyledMenuItem onClick={() => console.log("task")}>
+        <StyledMenuItem onClick={() =>{setMenuAnchorEl(null)
+         setOpenEmailModal(true)}}>
           Send EMail
         </StyledMenuItem>
         <StyledMenuItem onClick={() => console.log("task")}>
@@ -236,6 +201,7 @@ export default function TaskTable({
   };
   const onClose = () => {
     setModal(null);
+    setOpenEmailModal(true)
   };
   return (
     <Box sx={communityStyles.container(height)}>
@@ -256,25 +222,17 @@ export default function TaskTable({
             },
           ]}
         />
-        {/* <Button
-          onClick={(e) => {
-            console.log(e.currentTarget, "currentTarget");
-            setModal(e.currentTarget);
-          }}
-          ref={anchorRef}
-        >
-          View Details
-        </Button> */}
+
         <FilterDrawer
-          selectedProperty={assigneToData?.records || selectedProperty}
-          selectedPriority={selectedPriority}
-          setSelectedPriority={setSelectedPriority}
-          // toggleFilter={toggleFilter}
           anchorEl={anchorEl}
           setAnchorEl={setAnchorEl}
-          setSelectedProperties={setSelectedProperties}
+          filterColumns={filterColumns}
+          setFilterData={setFilterData}
+          selectedTab={selectedTab}
+          setSelectedTab={setSelectedTab}
         />
         <AppTable
+        hasCheckBox={false}
           rowKey="taskId"
           isLoading={isLoading}
           columns={columns}
@@ -297,20 +255,22 @@ export default function TaskTable({
             /> */}
       <AppMenu
         anchorEl={modal}
-        handleClose={() => setModal(null)}
+        handleClose={()=>setModal(null)}
         renderComponent={
           <AppTaskCard
             roleName="Richard"
             role="Property Manager Name"
             type="GRT"
             number="+1 432 567 987"
-            onClose={onClose}
+            onClose={()=>setModal(null)}
+            handleSendEmail={onClose}
           />
         }
         borderRadius={"20px"}
-        width={"20vw"}
+        // width={"20vw"}
       />
 
+      <EmailModal open={openEmailModal} setOpen={setOpenEmailModal} />
       <AppMenu
         anchorEl={menuAnchorEl}
         handleClose={handleMenuAnchorClose}

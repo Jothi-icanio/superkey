@@ -1,13 +1,11 @@
-import React, { useState } from "react";
 import {
   Box,
-  Typography,
-  Divider,
-  Checkbox,
-  FormControlLabel,
   Button,
-  Popover,
+  Checkbox,
+  Divider,
+  FormControlLabel,
 } from "@mui/material";
+import { useState } from "react";
 import AppMenu from "./AppComponents/AppMenu";
 import AppPriorityItems from "./AppPriorityComponent";
 
@@ -44,192 +42,153 @@ const styles = {
 };
 
 const FilterDrawer = ({
-  openFilter,
-  setOpenFilter,
-  selectedProperty = [],
-  selectedPriority = [],
-  setSelectedPriority,
   anchorEl,
   setAnchorEl,
-  setSelectedProperties,
+  filterColumns,
+  setFilterData,
+  selectedTab,
+  setSelectedTab,
 }) => {
-  const [selectedTab, setSelectedTab] = useState("Assigned to");
-  const [checkboxState, setCheckboxState] = useState(
-    selectedProperty.map(() => false)
-  );
-  const isAnyCheckboxSelected = checkboxState.some((isChecked) => isChecked);
-  const [currentSelectedPriority, setCurrentSelectedPriority] =
-    useState("High");
-
-  if (!openFilter) return null;
+  const [checkedFilters, setCheckedFilters] = useState({});
 
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-    setCheckboxState(selectedProperty.map(() => false));
-  };
-
-  const handleCheckboxChange = (index) => {
-    const updatedState = [...checkboxState];
-    updatedState[index] = !updatedState[index];
-    setCheckboxState(updatedState);
-  };
-
   const handleApply = () => {
-    const appliedProperties = selectedProperty.filter(
-      (filter) => filter.selected
-    );
-    const appliedPriorities = selectedPriority.filter(
-      (priority) => priority.selected
-    );
+    const appliedFilters = [];
 
-    console.log("Applied Filters: ", appliedProperties, appliedPriorities);
+    Object.keys(checkedFilters).forEach((key) => {
+      if (checkedFilters[key]) {
+        appliedFilters.push(key);
+      }
+    });
+    setFilterData(appliedFilters);
 
-    if (!isAnyCheckboxSelected) return;
-    const selectedFilters = selectedProperty.filter(
-      (_, index) => checkboxState[index]
-    );
-    console.log("!@#$%^&*:", selectedFilters);
     setAnchorEl(null);
   };
 
   const toggleFilter = (idOrName) => {
-    console.log(idOrName, "onChange");
-    if (selectedTab === "Properties") {
-      setSelectedProperties((prev) =>
-        prev.map((filter) =>
-          filter.id === idOrName
-            ? { ...filter, selected: !filter.selected }
-            : filter
-        )
-      );
-    } else if (selectedTab === "Priority") {
-      setSelectedPriority((prev) =>
-        prev.map((priority) =>
-          priority.name === idOrName
-            ? { ...priority, selected: !priority.selected }
-            : priority
-        )
-      );
+    const updatedCheckedFilters = { ...checkedFilters };
+
+    if (updatedCheckedFilters[idOrName]) {
+      delete updatedCheckedFilters[idOrName];
+    } else {
+      updatedCheckedFilters[idOrName] = true;
     }
+
+    setCheckedFilters(updatedCheckedFilters);
   };
-  const colors = {
-    0: "#E81616",
-    1: "#EB6C0B",
-    2: "#DEC013",
+  const renderOptions = () => {
+    const currentFilters = filterColumns[selectedTab]?.data || [];
+    return currentFilters.map((filter) => {
+      if (filterColumns[selectedTab]?.checked) {
+        return (
+          <FormControlLabel
+            key={filter.Id || filter.Name}
+            control={
+              <Checkbox
+                checked={!!checkedFilters[filter.Name]}
+                onChange={() => toggleFilter(filter.Name)}
+              />
+            }
+            label={filter.Name}
+            sx={{ display: "block", mb: 1 }}
+          />
+        );
+      }
+
+      return (
+        <AppPriorityItems
+          key={filter.name}
+          name={filter.name}
+          color={filter.color}
+          isSelected={!!checkedFilters[filter.name]}
+          onClick={() => toggleFilter(filter.name)}
+        />
+      );
+    });
   };
 
-  Object.keys(selectedPriority).forEach((key) => {
-    selectedPriority[key] = {
-      ...selectedPriority[key],
-      color: colors[key],
-    };
-  });
-
-  const renderComponent = () => (
-    <>
-      <Box sx={{ display: "flex", height: "100%" }}>
-        <Box sx={{ width: "100%" }}>
-          <Button
-            variant={selectedTab === "Assigned to" ? "contained" : "none"}
-            color={selectedTab === "Assigned to" ? "none" : "default"}
-            onClick={() => handleTabClick("Assigned to")}
-            sx={styles.button(selectedTab === "Assigned to")}
-          >
-            Assigned to
-          </Button>
-          <Button
-            variant={selectedTab === "Priority" ? "contained" : "none"}
-            color={selectedTab === "Priority" ? "none" : "default"}
-            onClick={() => handleTabClick("Priority")}
-            sx={styles.button(selectedTab === "Priority")}
-          >
-            Priority
-          </Button>
-        </Box>
-        <Divider orientation="vertical" flexItem sx={styles.dividerVertical} />
-        <Box sx={styles.scrollContainer}>
-          <Box sx={{ mt: 1 }}>
-            {selectedTab === "Assigned to" ? (
-              selectedProperty.length > 0 ? (
-                selectedProperty.map((filter, index) => (
-                  <FormControlLabel
-                    key={filter.id}
-                    control={
-                      <Checkbox
-                        checked={checkboxState[index]}
-                        onChange={() => handleCheckboxChange(index)}
-                      />
-                    }
-                    label={filter.Name}
-                    sx={styles.formControlLabel}
-                  />
-                ))
-              ) : (
-                <Box
-                  sx={{
-                    textAlign: "center",
-                    color: "gray",
-                    mt: 2,
-                    fontSize: "14px",
-                  }}
-                >
-                  No Assignee Found
-                </Box>
-              )
-            ) : selectedPriority.length > 0 ? (
-              selectedPriority.map((priority) => (
-                <AppPriorityItems
-                  key={priority.name}
-                  name={priority.name}
-                  color={priority.color}
-                  isSelected={priority.name === currentSelectedPriority}
-                  onClick={() => setCurrentSelectedPriority(priority.name)}
-                />
-              ))
-            ) : (
-              <Box
+  const renderComponent = () => {
+    return (
+      <>
+        <Box sx={{ display: "flex", height: "100%" }}>
+          <Box sx={{ width: "100%" }}>
+            {Object.keys(filterColumns).map((tab) => (
+              <Button
+                key={tab}
+                variant={selectedTab === tab ? "contained" : "none"}
+                color={selectedTab === tab ? "none" : "default"}
+                onClick={() => handleTabClick(tab)}
                 sx={{
-                  textAlign: "center",
-                  color: "gray",
-                  mt: 2,
-                  fontSize: "14px",
+                  width: "155px",
+                  height: "41px",
+                  margin: "8px 7px",
+                  borderRadius: "8px",
+                  backgroundColor:
+                    selectedTab === tab ? "#E0EDFF" : "transparent",
+                  color: selectedTab === tab ? "#2954E1" : "black",
                 }}
               >
-                No Priority Found
-              </Box>
-            )}
+                {filterColumns[tab]?.label}
+              </Button>
+            ))}
+          </Box>
+          <Divider
+            orientation="vertical"
+            flexItem
+            sx={{ mx: 2, marginLeft: "-20px" }}
+          />
+          <Box
+            sx={{
+              width: "100%",
+              height: "18rem",
+              overflow: "scroll",
+              padding: "8px",
+            }}
+          >
+            <Box sx={{ mt: 1 }}>{renderOptions()}</Box>
           </Box>
         </Box>
-      </Box>
 
-      <Divider sx={{ my: 2 }} />
+        <Divider sx={{ my: 2 }} />
 
-      <Box
-        sx={{ display: "flex", justifyContent: "space-between", mt: 2, p: 1 }}
-      >
-        <Button
-          variant="outlined"
-          onClick={() => handleClose()}
-          sx={styles.actionButton}
+        <Box
+          sx={{ display: "flex", justifyContent: "space-between", mt: 2, p: 1 }}
         >
-          Cancel
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleApply}
-          disabled={!isAnyCheckboxSelected}
-          sx={styles.actionButton}
-        >
-          Apply
-        </Button>
-      </Box>
-    </>
-  );
+          <Button
+            variant="outlined"
+            onClick={() => setAnchorEl(null)}
+            sx={{
+              borderRadius: "10px",
+              fontWeight: 500,
+              fontSize: "14px",
+              textTransform: "none",
+              width: "45%",
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleApply}
+            disabled={Object.keys(checkedFilters).length === 0}
+            sx={{
+              borderRadius: "10px",
+              fontWeight: 500,
+              fontSize: "14px",
+              textTransform: "none",
+              width: "45%",
+            }}
+          >
+            Apply
+          </Button>
+        </Box>
+      </>
+    );
+  };
 
   return (
     <AppMenu
